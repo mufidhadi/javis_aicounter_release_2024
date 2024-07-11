@@ -1,0 +1,5 @@
+# ultralytics
+argparse
+supervision==0.3.1
+paho-mqtt==2.0.0
+lapx>=0.5.2

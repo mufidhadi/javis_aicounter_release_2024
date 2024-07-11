@@ -1,0 +1,1020 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>AI Counter Simpang APILL</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+    <!-- Bootstrap CSS v5.2.1 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
+    <style>
+        #image {
+            width: 100%;
+        }
+
+        #data_smp {
+            display: none;
+        }
+
+        .nav-link,
+        #judul {
+            text-transform: capitalize;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand navbar-light bg-light">
+        <div class="container-fluid">
+            <div class="col-1"></div>
+            <div class="col-11">
+                <ul class="nav navbar-nav" id="navbar">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Beranda</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="view.html?id=1&id_kaki_simpang=1&id_device=1">Maguwo Utara</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="view.html?id=2&id_kaki_simpang=2&id_device=1">Maguwo Timur</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="view.html?id=3&id_kaki_simpang=3&id_device=1">Maguwo Barat</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="view_ruas.html?id=8&id_ruas=1&id_device=1">Maguwo Timur (ruas)</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h1 class="text-center" id="judul"></h1>
+            </div>
+        </div>
+        <div class="row mt-5 mb-2">
+            <div class="col-5">
+                <div class="row">
+                    <div class="col mt-3">
+                        <img src="" alt="" class="img-fluid" id="image">
+                    </div>
+                </div>
+            </div>
+            <div class="col-7">
+                <div class="row">
+                    <div class="col mt-3">
+                        <h3>Realtime Count</h3>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6 mt-3">
+                        <h5>⬇️ : <span id="smp_out">0</span> (SMP/menit)</h5>
+                        <canvas id="rt_chart_out"></canvas>
+                    </div>
+                    <div class="col-6 mt-3">
+                        <h5>⬆️ : <span id="smp_in">0</span> (SMP/menit)</h5>
+                        <canvas id="rt_chart_in"></canvas>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col mt-3">
+                        <h3>Historical Count</h3>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6 mt-3">
+                        <h5>⬇️ : <span id="smp_sum_out">0</span> (SMP/jam)</h5>
+                        <canvas id="rt_chart_history_out"></canvas>
+                    </div>
+                    <div class="col-6 mt-3">
+                        <h5>⬆️ : <span id="smp_sum_in">0</span> (SMP/jam)</h5>
+                        <canvas id="rt_chart_history_in"></canvas>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col mt-3">
+                        <div class="d-grid gap-2">
+                            <a href="log_tabel.html" class="btn btn-primary" id="link_tabel">Lihat Data Lengkap 📑</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col mt-3">
+                        <div class="row">
+                            <div class="col">
+                                <div class="card text-bg-success">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col">
+                                                <h5>Download Laporan Excel</h5>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col">
+                                                <div class="input-group">
+                                                    <span class="input-group-text">Mulai</span>
+                                                    <input type="date" name="start_date" id="start_date"
+                                                        class="form-control" placeholder="Tanggal Mulai" />
+                                                    <span class="input-group-text">Hingga:</span>
+                                                    <input type="date" name="end_date" id="end_date"
+                                                        class="form-control" placeholder="Tanggal Akhir" />
+                                                    <a href="" target="_blank" class="btn btn-dark" id="download_btn">
+                                                        💾 Download
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="row">
+                    <div class="col mt-3">
+                        <h3>Kinerja Kaki Simpang Realtime</h3>
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>J</th>
+                                    <th>C</th>
+                                    <th>SMP</th>
+                                    <th>SMP <sub>bki</sub></th>
+                                    <th>SMP <sub>bka</sub></th>
+                                    <th>DS</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td id="nilai_j">0</td>
+                                    <td id="nilai_c">0</td>
+                                    <td id="smp_total">0</td>
+                                    <td id="smp_bki">0</td>
+                                    <td id="smp_bka">0</td>
+                                    <td id="nilai_ds">0</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col mt-3">
+                <h3>Diagram Data Kendaraan 1 Jam Terakhir (Counting)</h3>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col mt-3">
+                <canvas id="chart_sejam_count"></canvas>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col mt-3">
+                <h3>Diagram Data Kendaraan 1 Jam Terakhir (SMP)</h3>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col mt-3">
+                <canvas id="chart_sejam_smp"></canvas>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col mt-3">
+                <h3>pengaturan variabel kapasitas kaki simpang</h3>
+            </div>
+        </div>
+        <div class="row mt-2 mb-2">
+            <div class="col">
+                <label for="" class="form-label">waktu hijau</label>
+                <input type="number" min="0" class="form-control" name="waktu_hijau" id="waktu_hijau" />
+            </div>
+        </div>
+        <div class="row mt-2 mb-2">
+            <div class="col">
+                <label for="" class="form-label">total siklus</label>
+                <input type="number" min="0" class="form-control" name="total_siklus" id="total_siklus" />
+            </div>
+        </div>
+        <div class="row mt-2 mb-2">
+            <div class="col">
+                <label for="" class="form-label">tipe lingkungan</label>
+                <select class="form-select" name="tipe_lingkungan" id="tipe_lingkungan">
+                    <option value="komersial">komersial</option>
+                    <option value="permukiman">permukiman</option>
+                    <option value="akses terbatas">akses terbatas</option>
+                </select>
+            </div>
+        </div>
+        <div class="row mt-2 mb-2">
+            <div class="col">
+                <label for="" class="form-label">tipe fase</label>
+                <select class="form-select" name="tipe_fase" id="tipe_fase">
+                    <option value="terlawan">terlawan</option>
+                    <option value="terlindung">terlindung</option>
+                </select>
+            </div>
+        </div>
+        <div class="row mt-2 mb-2">
+            <div class="col">
+                <label for="" class="form-label">jumlah juta penduduk kota</label>
+
+                <!-- <div class="input-group">
+                    <input type="number" class="form-control" name="jumlah_juta_penduduk_kota"
+                        id="jumlah_juta_penduduk_kota" />
+                    <div class="input-group-text">
+                        Juta jiwa
+                    </div>
+                </div> -->
+
+                <select class="form-select" name="jumlah_juta_penduduk_kota" id="jumlah_juta_penduduk_kota">
+                    <option value="2.9">3.0 s/d 1.0 juta jiwa</option>
+                    <option value="0.9">1.0 s/d 0.5 juta jiwa</option>
+                    <option value="0.4">0.5 s/d 0.1 juta jiwa</option>
+                    <option value="0.09">0.1 s/d 0.082 juta jiwa</option>
+                </select>
+
+            </div>
+        </div>
+        <div class="row mt-2 mb-2">
+            <div class="col">
+                <label for="" class="form-label">tipe hambatan samping</label>
+                <select class="form-select" name="tipe_hambatan_samping" id="tipe_hambatan_samping">
+                    <option value="tinggi">tinggi</option>
+                    <option value="sedang">sedang</option>
+                    <option value="rendah">rendah</option>
+                </select>
+            </div>
+        </div>
+        <div class="row mt-2 mb-2">
+            <div class="col">
+                <label for="" class="form-label">lebar efektif pendekat</label>
+                <input type="text" class="form-control" name="lebar_efektif_pendekat" id="lebar_efektif_pendekat" />
+            </div>
+        </div>
+        <input type="hidden" class="form-control" name="id_" id="id_" />
+        <div class="row mt-2 mb-5">
+            <div class="col">
+                <div class="d-grid gap-2">
+                    <button type="button" name="simpan" id="simpan" class="btn btn-primary">
+                        Simpan Pengaturan
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Bootstrap JavaScript Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+        integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+        crossorigin="anonymous"></script>
+
+    <!-- Latest compiled and minified JS -->
+    <script src="//code.jquery.com/jquery.js"></script>
+
+    <script src="chart.js"></script>
+
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <script src="c_simpang_apill.js"></script>
+
+    <script src="hitung_smp.js"></script>
+
+    <script>
+        // Test values
+        var waktu_hijau = 400; // directs
+        var total_siklus = 440; // directs
+
+        var tipe_lingkungan = 'permukiman'; // survei
+        var tipe_fase = 'terlawan'; // survei
+        var jumlah_juta_penduduk_kota = 0.5; // survei
+        var tipe_hambatan_samping = 'sedang'; // survei (sangat rendah, rendah, sedang, tinggi, dan sangat tinggi) mkji2023.pdf hal 109
+        var lebar_efektif_pendekat = 6; // survei
+        // var lebar_pendekat = 6; // survei
+        // var jarak_garis_henti_ke_kendaraan_pertama_kiri = 1; // survei
+
+        var jumlah_belok_kiri = Math.floor(Math.random() * 100); // klasifikasi (belok kiri = jumlah smp kaki simpang sisi kiri X, selama X sedang fase hijau)
+        var jumlah_belok_kanan = Math.floor(Math.random() * 100); // klasifikasi (belok kanan = jumlah smp kaki simpang sisi kanan X, selama X sedang fase hijau)
+        var jumlah_smp_total = jumlah_belok_kanan + jumlah_belok_kiri + Math.floor(Math.random() * 100); // klasifikasi
+        var jumlah_kendaraan_tak_bermotor = jumlah_smp_total * 0.05; // klasifikasi
+
+        function updateHitungan() {
+            let hasil = hitung(
+                waktu_hijau,
+                total_siklus,
+                lebar_efektif_pendekat,
+                tipe_lingkungan,
+                tipe_hambatan_samping,
+                tipe_fase,
+                jumlah_kendaraan_tak_bermotor,
+                jumlah_juta_penduduk_kota,
+                jumlah_belok_kiri,
+                jumlah_belok_kanan,
+                jumlah_smp_total,
+                // jarak_garis_henti_ke_kendaraan_pertama_kiri,
+                // lebar_pendekat
+            )
+
+            document.getElementById('nilai_j').innerText = Math.round((hasil.nilai_j + Number.EPSILON) * 100) / 100
+            document.getElementById('nilai_c').innerText = Math.round((hasil.nilai_c + Number.EPSILON) * 100) / 100
+
+            nilai_j = hasil.nilai_j
+            nilai_c = hasil.nilai_c
+
+            console.log(hasil)
+        }
+
+        updateHitungan()
+
+    </script>
+
+    <script>
+        // get url ip address
+        const be_ip = window.location.hostname
+
+        const params = new URLSearchParams(window.location.search)
+
+        document.getElementById('link_tabel').href = 'log_tabel.html' + window.location.search
+
+        const id = (params.get('id')) ? params.get('id') : 1
+        const id_kaki_simpang = (params.get('id_kaki_simpang')) ? params.get('id_kaki_simpang') : 1
+        const id_device = (params.get('id_device')) ? params.get('id_device') : 1
+
+        var ip_device = '172.29.109.20'
+        var device_data = {}
+        var camera_data = {}
+
+        var device_camera_list = []
+
+        var nilai_c = 0
+        var nilai_j = 0
+        var nilai_ds = 0
+        // var nilai_smp_total = 0
+
+        function getDeviceIp() {
+            $.ajax('http://'+be_ip+':3000/tabel_where/device/id/' + id_device, {
+                success: (data, status) => {
+                    if (data.result.length > 0) {
+                        // console.log(data.result[0])
+                        device_data = data.result[0]
+
+                        // ip_device = (device_data.ip) ? device_data.ip : '172.29.109.20'
+                        ip_device = be_ip
+                    }
+                }
+            })
+        }
+
+        function getDeviceCameraList() {
+            $.ajax('http://'+be_ip+':3000/camera_list_json/' + id_device, {
+                success: (data, status) => {
+                    device_camera_list = data
+
+                    console.log(device_camera_list)
+                    getCameraData()
+                    setNavbar()
+                }
+            })
+        }
+
+        function getCameraData() {
+            camera_data = device_camera_list.find((x) => x.id == id)
+            console.log(camera_data)
+            document.getElementById('judul').innerText = camera_data.name
+
+            const curr_date = new Date()
+            document.getElementById('start_date').value = curr_date.toISOString().substring(0, 10)
+            document.getElementById('end_date').value = curr_date.toISOString().substring(0, 10)
+            updateDownloadBtn()
+        }
+
+        function updateDownloadBtn() {
+            document.getElementById('download_btn').href = 'http://'+be_ip+':3000/report_excel/' + id + '?' + 'start_date=' + document.getElementById('start_date').value + '&end_date=' + document.getElementById('end_date').value
+
+            document.getElementById('start_date').onchange = () => {
+                updateDownloadBtn()
+            }
+            document.getElementById('end_date').onchange = () => {
+                updateDownloadBtn()
+            }
+        }
+
+        function setNavbar() {
+            let navItems = `<li class="nav-item"><a class="nav-link" href="index.html">beranda</a></li>
+            `
+            device_camera_list.forEach(cam => {
+                const href = ((cam.jenis_lokasi == 'simpang') ? 'view' : 'view_ruas') + '.html?id=' + cam.id + '&' + ((cam.jenis_lokasi == 'simpang') ? 'id_kaki_simpang=' : 'id_ruas=') + cam.id_key + '&id_device=' + id_device
+                const text = cam.name
+                const isActive = (cam.id == id)
+                navItems += navItem(href, text, isActive)
+            })
+            document.getElementById('navbar').innerHTML = navItems
+        }
+
+        function navItem(href = '', text = 'Link', isActive = false) {
+            return `<li class="nav-item"><a class="nav-link` + (isActive ? ' active' : '') + `" href="` + href + `">` + text + `</a></li>
+            `
+        }
+
+        getDeviceIp()
+        getDeviceCameraList()
+
+
+        function wsDisplayImage() {
+            // WebSocket connection
+            // const ws2 = new WebSocket('ws://localhost:8081/');
+            const ws2 = new WebSocket('ws://' + ip_device + ':8081/');
+
+            // Function to handle incoming WebSocket messages
+            ws2.onmessage = function (event) {
+                // Parse the received JSON data
+                // console.log(event);
+                const data = JSON.parse(event.data);
+
+                // Check if the received message contains 'frame' data
+                if (data['streams_cam' + id]) {
+                    document.getElementById('image').src = 'data:image/jpeg;base64,' + data['streams_cam' + id];
+                }
+            }
+
+            ws2.onerror = function () {
+                wsDisplayImage()
+            }
+            ws2.onclose = function () {
+                wsDisplayImage()
+            }
+        }
+
+        function wsDisplayText() {
+            // WebSocket connection
+            // const ws = new WebSocket('ws://localhost:8080/');
+            const ws = new WebSocket('ws://' + ip_device + ':8080/');
+
+            // Function to handle incoming WebSocket messages
+            ws.onmessage = function (event) {
+                // Parse the received JSON data
+                // console.log(event);
+                const data = JSON.parse(event.data);
+
+                if (data.id_kamera) {
+                    if (data.id_kamera == id) {
+                        document.getElementById('data_smp').innerText = event.data
+
+                        document.getElementById('smp_in').innerText = data.smp_in
+                        document.getElementById('smp_out').innerText = data.smp_out
+
+                        document.getElementById('sm_in').innerText = objekAiCount(data.objek_in, 'motor')
+                        document.getElementById('mp_in').innerText = objekAiCount(data.objek_in, 'mobil')
+                        document.getElementById('ks_in').innerText = objekAiCount(data.objek_in, 'truck') + objekAiCount(data.objek_in, 'bus')
+                        document.getElementById('tb_in').innerText = objekAiCount(data.objek_in, 'truck besar')
+                        document.getElementById('bb_in').innerText = objekAiCount(data.objek_in, 'bus besar')
+
+                        document.getElementById('sm_out').innerText = objekAiCount(data.objek_out, 'motor')
+                        document.getElementById('mp_out').innerText = objekAiCount(data.objek_out, 'mobil')
+                        document.getElementById('ks_out').innerText = objekAiCount(data.objek_out, 'truck') + objekAiCount(data.objek_out, 'bus')
+                        document.getElementById('tb_out').innerText = objekAiCount(data.objek_out, 'truck besar')
+                        document.getElementById('bb_out').innerText = objekAiCount(data.objek_out, 'bus besar')
+                    }
+                }
+            }
+
+            ws.onerror = function () {
+                wsDisplayText()
+            }
+            ws.onclose = function () {
+                wsDisplayText()
+            }
+        }
+
+        function objekAiCount(objek, nama) {
+            let count = 0
+            objek.forEach(obj => {
+                if (obj.name == nama) {
+                    count = obj.count
+                }
+            })
+            return count
+        }
+
+        // function getTotalSMPHour() {
+        //     $.ajax('http://'+be_ip+':3000/average_last_hour/' + id, {
+        //         success: (data, status) => {
+        //             if (data.result.length > 0) {
+        //                 // console.log(data.result[0])
+        //                 const sum_count = data.result[0]
+        //                 document.getElementById('smp_sum').innerText = sum_count.smp_in + sum_count.smp_out
+        //                 document.getElementById('sm_sum').innerText = sum_count.sm
+        //                 document.getElementById('mp_sum').innerText = sum_count.mp
+        //                 document.getElementById('ks_sum').innerText = sum_count.ks
+        //                 document.getElementById('tb_sum').innerText = sum_count.tb
+        //                 document.getElementById('bb_sum').innerText = sum_count.bb
+
+
+        //                 updateHitungan()
+        //                 jumlah_smp_total = sum_count.smp_in + sum_count.smp_out
+        //                 document.getElementById('smp_total').innerText = jumlah_smp_total
+        //                 nilai_ds = jumlah_smp_total / nilai_c
+        //                 // if (jumlah_smp_total < 1) {
+        //                 //     nilai_ds = 0.0
+        //                 // }
+        //                 document.getElementById('nilai_ds').innerText = Math.round((nilai_ds + Number.EPSILON) * 100) / 100
+        //             }
+        //         }
+        //     })
+        // }
+
+        function getTotalSMPHourKakiSimpang() {
+            $.ajax('http://'+be_ip+':3000/average_last_hour_rasio_kaki_simpang/' + id_kaki_simpang, {
+                success: (data, status) => {
+                    if (data.result.length > 0) {
+                        // console.log(data.result[0])
+                        sum_count = data.result[0]
+
+                        // document.getElementById('smp_bki').innerText = sum_count.rasio_kiri
+                        // document.getElementById('smp_bka').innerText = sum_count.rasio_kanan
+
+                        document.getElementById('smp_bki').innerText = Math.round((sum_count.rasio_kiri + Number.EPSILON) * 100) / 100
+                        document.getElementById('smp_bka').innerText = Math.round((sum_count.rasio_kanan + Number.EPSILON) * 100) / 100
+
+                    }
+                }
+            })
+        }
+
+        function getDataKakiSimpang() {
+            document.getElementById('simpan').onclick = insertSimpangKakiData
+            $.ajax('http://'+be_ip+':3000/simpang_kaki_data/' + id, {
+                success: (data, status) => {
+                    if (data.result.length > 0) {
+                        // console.log(data.result[0])
+                        const kaki = data.result[0]
+                        document.getElementById('waktu_hijau').value = kaki.waktu_hijau
+                        document.getElementById('total_siklus').value = kaki.total_siklus
+                        document.getElementById('tipe_lingkungan').value = kaki.tipe_lingkungan
+                        document.getElementById('tipe_fase').value = kaki.tipe_fase
+                        document.getElementById('jumlah_juta_penduduk_kota').value = kaki.jumlah_juta_penduduk_kota
+                        document.getElementById('tipe_hambatan_samping').value = kaki.tipe_hambatan_samping
+                        document.getElementById('lebar_efektif_pendekat').value = kaki.lebar_efektif_pendekat
+                        document.getElementById('simpan').onclick = updateSimpangKakiData
+
+                        waktu_hijau = kaki.waktu_hijau
+                        total_siklus = kaki.total_siklus
+                        tipe_lingkungan = kaki.tipe_lingkungan
+                        tipe_fase = kaki.tipe_fase
+                        jumlah_juta_penduduk_kota = kaki.jumlah_juta_penduduk_kota
+                        tipe_hambatan_samping = kaki.tipe_hambatan_samping
+                        lebar_efektif_pendekat = kaki.lebar_efektif_pendekat
+
+                        updateHitungan()
+                    }
+                }
+            })
+        }
+
+        function insertSimpangKakiData() {
+            const data = {
+                id_simpang_kaki: id,
+                waktu_hijau: document.getElementById('waktu_hijau').value,
+                total_siklus: document.getElementById('total_siklus').value,
+                tipe_lingkungan: document.getElementById('tipe_lingkungan').value,
+                tipe_fase: document.getElementById('tipe_fase').value,
+                jumlah_juta_penduduk_kota: document.getElementById('jumlah_juta_penduduk_kota').value,
+                tipe_hambatan_samping: document.getElementById('tipe_hambatan_samping').value,
+                lebar_efektif_pendekat: document.getElementById('lebar_efektif_pendekat').value,
+            }
+            // http://'+be_ip+':3000/tabel/simpang/insert?nama=tajem%20utara&lat=176.168
+            document.getElementById('simpan').disabled = true
+            document.getElementById('simpan').innerText = 'menyimpan...'
+            let url = 'http://'+be_ip+':3000/tabel/simpang_kaki_data/insert?' + objectToQueryString(data)
+            $.ajax(url, {
+                success: (data, status) => {
+                    document.getElementById('simpan').disabled = false
+                    document.getElementById('simpan').innerText = 'simpan'
+                    document.getElementById('simpan').onclick = updateSimpangKakiData
+                    updateHitungan()
+                },
+                error: (xhr, status) => {
+                    document.getElementById('simpan').disabled = false
+                    document.getElementById('simpan').innerText = 'simpan'
+                    document.getElementById('simpan').onclick = insertSimpangKakiData
+                }
+            })
+        }
+
+        function updateSimpangKakiData() {
+            const id_ = document.getElementById('id_').value
+            const data = {
+                id_simpang_kaki: id,
+                waktu_hijau: document.getElementById('waktu_hijau').value,
+                total_siklus: document.getElementById('total_siklus').value,
+                tipe_lingkungan: document.getElementById('tipe_lingkungan').value,
+                tipe_fase: document.getElementById('tipe_fase').value,
+                jumlah_juta_penduduk_kota: document.getElementById('jumlah_juta_penduduk_kota').value,
+                tipe_hambatan_samping: document.getElementById('tipe_hambatan_samping').value,
+                lebar_efektif_pendekat: document.getElementById('lebar_efektif_pendekat').value,
+            }
+            // http://'+be_ip+':3000/tabel/simpang/update/4?nama=tajem%20utara&lat=176.168
+            document.getElementById('simpan').disabled = true
+            document.getElementById('simpan').innerText = 'menyimpan...'
+            let url = 'http://'+be_ip+':3000/tabel/simpang_kaki_data/update/' + id_ + '?' + objectToQueryString(data)
+            $.ajax(url, {
+                success: (data, status) => {
+                    document.getElementById('simpan').disabled = false
+                    document.getElementById('simpan').innerText = 'simpan'
+                    document.getElementById('simpan').onclick = updateSimpangKakiData
+                    updateHitungan()
+                },
+                error: (xhr, status) => {
+                    document.getElementById('simpan').disabled = false
+                    document.getElementById('simpan').innerText = 'simpan'
+                    document.getElementById('simpan').onclick = insertSimpangKakiData
+                }
+            })
+        }
+
+        function objectToQueryString(obj) {
+            const keyValuePairs = [];
+            for (const key in obj) {
+                if (obj.hasOwnProperty(key)) {
+                    keyValuePairs.push(encodeURIComponent(key) + '=' + encodeURIComponent(obj[key]));
+                }
+            }
+            return keyValuePairs.join('&');
+        }
+
+
+
+        getDataKakiSimpang()
+        wsDisplayText()
+        wsDisplayImage()
+        // getTotalSMPHour()
+        getTotalSMPHourKakiSimpang()
+
+        setInterval(() => {
+            // getTotalSMPHour()
+            getTotalSMPHourKakiSimpang()
+        }, 60 * 1000);
+    </script>
+
+    <script>
+        // realtime count
+        var rt_chart_in = null
+        var rt_chart_out = null
+        var rt_chart_history_in = null
+        var rt_chart_history_out = null
+
+        function realtimeChart() {
+
+            if (rt_chart_in != null) {
+                rt_chart_in.destroy()
+                rt_chart_out.destroy()
+                rt_chart_history_in.destroy()
+                rt_chart_history_out.destroy()
+            }
+
+            const ctx_in = document.getElementById('rt_chart_in').getContext('2d');
+            const ctx_out = document.getElementById('rt_chart_out').getContext('2d');
+            const ctx_history_in = document.getElementById('rt_chart_history_in').getContext('2d');
+            const ctx_history_out = document.getElementById('rt_chart_history_out').getContext('2d');
+            rt_chart_in = new Chart(ctx_in, {
+                type: 'bar',
+                data: {
+                    labels: ['Motor (SM)', 'Mobil Penumpang (MP)', 'Bus (KS)', 'Truk (KS)', 'Truk Besar (TB)', 'Bus Besar (BB)'],
+                    datasets: [{
+                        label: 'Jumlah Kendaraan / Menit (Menjauhi Simpang) ⬆️',
+                        data: [0, 0, 0, 0, 0, 0],
+                    }]
+                },
+                options: {
+                    responsive: true
+                }
+            })
+            rt_chart_out = new Chart(ctx_out, {
+                type: 'bar',
+                data: {
+                    labels: ['Motor (SM)', 'Mobil Penumpang (MP)', 'Bus (KS)', 'Truk (KS)', 'Truk Besar (TB)', 'Bus Besar (BB)'],
+                    datasets: [{
+                        label: 'Jumlah Kendaraan / Menit (Mendekati Simpang) ⬇️',
+                        data: [0, 0, 0, 0, 0, 0],
+                    }]
+                },
+                options: {
+                    responsive: true
+                }
+            })
+            rt_chart_history_in = new Chart(ctx_history_in, {
+                type: 'bar',
+                data: {
+                    labels: ['Motor (SM)', 'Mobil Penumpang (MP)', 'Bus (KS)', 'Truk (KS)', 'Truk Besar (TB)', 'Bus Besar (BB)'],
+                    datasets: [{
+                        label: 'Jumlah Kendaraan / Jam (Menjauhi Simpang) ⬆️',
+                        data: [0, 0, 0, 0, 0, 0],
+                    }]
+                },
+                options: {
+                    responsive: true
+                }
+            })
+            rt_chart_history_out = new Chart(ctx_history_out, {
+                type: 'bar',
+                data: {
+                    labels: ['Motor (SM)', 'Mobil Penumpang (MP)', 'Bus (KS)', 'Truk (KS)', 'Truk Besar (TB)', 'Bus Besar (BB)'],
+                    datasets: [{
+                        label: 'Jumlah Kendaraan / Jam (Mendekati Simpang) ⬇️',
+                        data: [0, 0, 0, 0, 0, 0],
+                    }]
+                },
+                options: {
+                    responsive: true
+                }
+            })
+
+            const ws = new WebSocket('ws://' + ip_device + ':8080/')
+
+            ws.onmessage = function (event) {
+                const data = JSON.parse(event.data)
+                if (data.id_kamera) {
+                    if (data.id_kamera == id) {
+                        rt_chart_in.data.datasets[0].data = [
+                            objekAiCount(data.objek_in, 'motor'),
+                            objekAiCount(data.objek_in, 'mobil'),
+                            objekAiCount(data.objek_in, 'truck'),
+                            objekAiCount(data.objek_in, 'bus'),
+                            objekAiCount(data.objek_in, 'truck besar'),
+                            objekAiCount(data.objek_in, 'bus besar')
+                        ]
+                        rt_chart_in.data.labels = [
+                            'Motor (' + (objekAiCount(data.objek_in, 'motor')) + ')',
+                            'Mobil Penumpang (' + objekAiCount(data.objek_in, 'mobil') + ')',
+                            'Bus (' + (objekAiCount(data.objek_in, 'truck')) + ')',
+                            'Truk (' + objekAiCount(data.objek_in, 'bus') + ')',
+                            'Truk Besar (' + objekAiCount(data.objek_in, 'truk besar') + ')',
+                            'Bus Besar (' + objekAiCount(data.objek_in, 'bus besar') + ')'
+                        ]
+                        rt_chart_in.update()
+
+                        const total_smp_rt_in = hitung_smp_simpang_apill(
+                            objekAiCount(data.objek_in, 'motor'),
+                            objekAiCount(data.objek_in, 'mobil'),
+                            objekAiCount(data.objek_in, 'truck') + objekAiCount(data.objek_in, 'bus'),
+                            objekAiCount(data.objek_in, 'truck besar'),
+                            objekAiCount(data.objek_in, 'bus besar')
+                        )
+                        document.getElementById('smp_in').innerHTML = Math.round((total_smp_rt_in + Number.EPSILON) * 100) / 100
+
+                        rt_chart_out.data.datasets[0].data = [
+                            objekAiCount(data.objek_out, 'motor'),
+                            objekAiCount(data.objek_out, 'mobil'),
+                            objekAiCount(data.objek_out, 'truck'),
+                            objekAiCount(data.objek_out, 'bus'),
+                            objekAiCount(data.objek_out, 'truck besar'),
+                            objekAiCount(data.objek_out, 'bus besar')
+                        ]
+                        rt_chart_out.data.labels = [
+                            'Motor (' + (objekAiCount(data.objek_out, 'motor')) + ')',
+                            'Mobil Penumpang (' + objekAiCount(data.objek_out, 'mobil') + ')',
+                            'Bus (' + (objekAiCount(data.objek_out, 'truck')) + ')',
+                            'Truk (' + objekAiCount(data.objek_out, 'bus') + ')',
+                            'Truk Besar (' + objekAiCount(data.objek_out, 'truk besar') + ')',
+                            'Bus Besar (' + objekAiCount(data.objek_out, 'bus besar') + ')'
+                        ]
+                        rt_chart_out.update()
+
+                        const total_smp_rt_out = hitung_smp_simpang_apill(
+                            objekAiCount(data.objek_out, 'motor'),
+                            objekAiCount(data.objek_out, 'mobil'),
+                            objekAiCount(data.objek_out, 'truck') + objekAiCount(data.objek_out, 'bus'),
+                            objekAiCount(data.objek_out, 'truck besar'),
+                            objekAiCount(data.objek_out, 'bus besar')
+                        )
+                        document.getElementById('smp_out').innerHTML = Math.round((total_smp_rt_out + Number.EPSILON) * 100) / 100
+                    }
+                }
+            }
+
+            ws.onerror = function () {
+                realtimeChart()
+            }
+
+            ws.onclose = function () {
+                realtimeChart()
+            }
+
+            updateChartSMPJam()
+        }
+
+        function updateChartSMPJam() {
+            if (rt_chart_history_in == null) {
+                return
+            }
+            $.ajax('http://'+be_ip+':3000/average_last_hour/' + id, {
+                success: (data, status) => {
+                    if (data.result.length > 0) {
+                        // console.log(data.result[0])
+                        const sum_count = data.result[0]
+
+                        rt_chart_history_in.data.datasets[0].data = [
+                            sum_count.sm_in,
+                            sum_count.mp_in,
+                            sum_count.ks_b_in,
+                            sum_count.ks_t_in,
+                            sum_count.tb_in,
+                            sum_count.bb_in
+                        ]
+                        rt_chart_history_in.data.labels = [
+                            'Motor (' + (sum_count.sm_in) + ')',
+                            'Mobil Penumpang (' + sum_count.mp_in + ')',
+                            'Bus (' + (sum_count.ks_b_in) + ')',
+                            'Truk (' + sum_count.ks_t_in + ')',
+                            'Truk Besar (' + sum_count.tb_in + ')',
+                            'Bus Besar (' + sum_count.bb_in + ')'
+                        ]
+                        rt_chart_history_in.update()
+
+                        const total_in = sum_count.sm_in + sum_count.mp_in + sum_count.ks_b_in + sum_count.ks_t_in + sum_count.tb_in + sum_count.bb_in
+
+                        document.getElementById('smp_sum_in').innerText = total_in
+
+                        rt_chart_history_out.data.datasets[0].data = [
+                            sum_count.sm_out,
+                            sum_count.mp_out,
+                            sum_count.ks_b_out,
+                            sum_count.ks_t_out,
+                            sum_count.tb_out,
+                            sum_count.bb_out
+                        ]
+                        rt_chart_history_out.data.labels = [
+                            'Motor (' + (sum_count.sm_out) + ')',
+                            'Mobil Penumpang (' + sum_count.mp_out + ')',
+                            'Bus (' + (sum_count.ks_b_out) + ')',
+                            'Truk (' + sum_count.ks_t_out + ')',
+                            'Truk Besar (' + sum_count.tb_out + ')',
+                            'Bus Besar (' + sum_count.bb_out + ')'
+                        ]
+                        rt_chart_history_out.update()
+
+                        const total_out = sum_count.sm_out + sum_count.mp_out + sum_count.ks_b_out + sum_count.ks_t_out + sum_count.tb_out + sum_count.bb_out
+                        document.getElementById('smp_sum_out').innerText = total_out
+
+
+                        updateHitungan()
+
+                        jumlah_smp_total = sum_count.smp_in + sum_count.smp_out
+
+                        document.getElementById('smp_total').innerText = Math.round((jumlah_smp_total + Number.EPSILON) * 100) / 100
+
+                        nilai_ds = jumlah_smp_total / nilai_c
+
+                        document.getElementById('nilai_ds').innerText = Math.round((nilai_ds + Number.EPSILON) * 100) / 100
+                    }
+                }
+            })
+        }
+
+        var one_hour_chart_count = null
+        var one_hour_chart_smp = null
+        function oneHourDataChart() {
+            const ctx_oh_count = document.getElementById('chart_sejam_count').getContext('2d')
+            const ctx_oh_smp = document.getElementById('chart_sejam_smp').getContext('2d')
+
+            one_hour_chart_count = new Chart(ctx_oh_count, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: []
+                }
+            })
+            one_hour_chart_smp = new Chart(ctx_oh_smp, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: []
+                }
+            })
+
+            one_hour_chart_count.data.labels = []
+            one_hour_chart_count.data.datasets = []
+            one_hour_chart_smp.data.labels = []
+            one_hour_chart_smp.data.datasets = []
+
+            one_hour_chart_count.update()
+            one_hour_chart_smp.update()
+
+            $.ajax('http://'+be_ip+':3000/tabel_where/camera_log/camera_id/' + id + '?limit=60', {
+                success: (data, status) => {
+                    let res_data = data.result
+                    res_data = res_data.reverse()
+                    let labels = []
+                    let values = {
+                        sm_in: [],
+                        sm_out: [],
+                        mp_in: [],
+                        mp_out: [],
+                        ks_b_in: [],
+                        ks_b_out: [],
+                        ks_t_in: [],
+                        ks_t_out: [],
+                        bb_in: [],
+                        bb_out: [],
+                        tb_in: [],
+                        tb_out: [],
+                    }
+                    for (let i = 0; i < res_data.length; i++) {
+                        labels.push(res_data[i].waktu.replace('T', ' ').replace('.000Z', ''))
+                        values.sm_in.push(res_data[i].sm_in)
+                        values.sm_out.push(res_data[i].sm_out)
+                        values.mp_in.push(res_data[i].mp_in)
+                        values.mp_out.push(res_data[i].mp_out)
+                        values.ks_b_in.push(res_data[i].ks_b_in)
+                        values.ks_b_out.push(res_data[i].ks_b_out)
+                        values.ks_t_in.push(res_data[i].ks_t_in)
+                        values.ks_t_out.push(res_data[i].ks_t_out)
+                        values.bb_in.push(res_data[i].bb_in)
+                        values.bb_out.push(res_data[i].bb_out)
+                        values.tb_in.push(res_data[i].tb_in)
+                        values.tb_out.push(res_data[i].tb_out)
+                    }
+                    one_hour_chart_count.data.labels = labels
+                    one_hour_chart_count.data.datasets = [
+                        {
+                            label: 'sepeda motor (in)',
+                            data: values.sm_in
+                        },
+                        {
+                            label: 'sepeda motor (out)',
+                            data: values.sm_out
+                        },
+                        {
+                            label: 'mobil penumpang (in)',
+                            data: values.mp_in
+                        },
+                        {
+                            label: 'mobil penumpang (out)',
+                            data: values.mp_out
+                        },
+                        {
+                            label: 'bus (in)',
+                            data: values.ks_b_in
+                        },
+                        {
+                            label: 'bus (out)',
+                            data: values.ks_b_out
+                        },
+                        {
+                            label: 'truck (in)',
+                            data: values.ks_t_in
+                        },
+                        {
+                            label: 'truck (out)',
+                            data: values.ks_t_out
+                        },
+                        {
+                            label: 'bus besar (in)',
+                            data: values.bb_in
+                        },
+                        {
+                            label: 'bus besar (out)',
+                            data: values.bb_out
+                        },
+                        {
+                            label: 'truck besar (in)',
+                            data: values.tb_in
+                        },
+                        {
+                            label: 'truck besar (out)',
+                            data: values.tb_out
+                        }
+                    ]
+                    one_hour_chart_count.update()
+                }
+            })
+        }
+
+        updateChartSMPJam()
+
+        setInterval(() => {
+            updateChartSMPJam()
+        }, 1000 * 60)
+
+        realtimeChart()
+    </script>
+</body>
+
+</html>

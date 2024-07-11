@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Display JSON WebSocket Data</title>
+</head>
+
+<body>
+
+    <img id="image" src="" alt="Received Image">
+
+    <script>
+        const id = 1
+
+        function wsDisplay() {
+            // WebSocket connection
+            // const ws = new WebSocket('ws://localhost:8080/');
+
+            // Function to handle incoming WebSocket messages
+            ws.onmessage = function (event) {
+                // Parse the received JSON data
+                // console.log(event);
+                const data = JSON.parse(event.data);
+
+                // Check if the received message contains 'frame' data
+                if (data['streams_cam' + id]) {
+                    document.getElementById('image').src = 'data:image/jpeg;base64,' + data['streams_cam' + id];
+                }
+            }
+
+            ws.onerror = function () {
+                wsDisplay()
+            }
+            ws.onclose = function () {
+                wsDisplay()
+            }
+        }
+
+        wsDisplay()
+    </script>
+
+</body>
+
+</html>

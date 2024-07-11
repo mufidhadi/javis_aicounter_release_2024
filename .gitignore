@@ -1,0 +1,6 @@
+*/__pycache__
+*/node_module
+db_orin_meja.sql
+*.pt
+*.onnx
+*.engine

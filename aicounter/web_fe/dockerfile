@@ -1,0 +1,12 @@
+# FROM httpd:2.4-alpine
+# COPY . /usr/local/apache2/htdocs/
+# FROM nginx
+# COPY ./public /usr/share/nginx/html
+
+FROM node:18-alpine
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+COPY . .
+EXPOSE 80
+CMD ["node", "index.js"]

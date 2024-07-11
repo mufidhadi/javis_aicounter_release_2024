@@ -1,0 +1,43 @@
+mqtt:
+  base_topic_pub: cam_log
+  host: localhost
+rtsp:
+  base_url: rtsp://localhost:8554/ai/
+ws:
+  host: ws://localhost:8080/
+  host2: ws://localhost:8081/
+smp:
+- name: mobil
+  smp: 1
+- name: motor
+  smp: 0.5
+- name: bus
+  smp: 3
+- name: truck
+  smp: 3
+- name: bus besar
+  smp: 5
+- name: truck besar
+  smp: 5
+yolo:
+  allowed_cls:
+  - truck
+  - motor
+  - mobil
+  - truck besar
+  - bus
+  - bus besar
+  model: jv_indo_m.pt
+presence_detector:
+  active: true
+  id: 1
+  fase: 1
+  mqtt:
+    host: localhost
+    username: javis
+    password: '#MqttJavis313'
+    topic:
+      send: 'its-link/server/'
+      receive: 'its-link/client/'
+  mode: gap # ds / gap
+  threshold: 0.5

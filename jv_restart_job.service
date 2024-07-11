@@ -1,0 +1,8 @@
+[Unit]
+After=network.target
+
+[Service]
+ExecStart=/usr/local/bin/jv_restart_job.sh
+
+[Install]
+WantedBy=default.target

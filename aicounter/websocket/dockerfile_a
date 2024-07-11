@@ -1,0 +1,11 @@
+FROM node:hydrogen-alpine
+
+WORKDIR /ws_ai
+COPY ./index.js ./index.js
+COPY ./package.json ./package.json
+
+RUN npm install
+
+EXPOSE 8080
+
+CMD [ "node","." ]

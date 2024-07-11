@@ -1,0 +1,12 @@
+use aicounter_db;
+
+ALTER TABLE `camera_list` 
+ADD COLUMN 
+`ln_st_x` FLOAT NULL DEFAULT 0.0,
+ADD COLUMN
+`ln_st_y` FLOAT NULL DEFAULT 0.5,
+ADD COLUMN
+`ln_en_x` FLOAT NULL DEFAULT 1.0, 
+ADD COLUMN
+`ln_en_y` FLOAT NULL DEFAULT 0.5
+AFTER `rtsp`;

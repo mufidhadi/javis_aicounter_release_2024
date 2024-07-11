@@ -1,0 +1,14 @@
+FROM mysql/mysql-server:latest
+ENV MYSQL_ROOT_PASSWORD=asdzxc
+ENV MYSQL_ROOT_HOST=%
+# -v /mysql_data:/var/lib/mysql
+# VOLUME /mysql_data
+EXPOSE 3306
+
+WORKDIR /ai_db
+COPY ./db_testing.sql ./
+EXPOSE 3306
+# run database
+CMD ["mysqld", "--init-file=/ai_db/db_testing.sql"]
+
+# docker run -p 3306:3306 -v /mysql_data:/var/lib/mysql mysql

@@ -1,0 +1,4 @@
+node_modules
+tes*
+*_docker.sh
+dockerfile

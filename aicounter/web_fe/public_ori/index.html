@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>AI Counter</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+    <!-- Bootstrap CSS v5.2.1 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
+</head>
+
+<body>
+
+    <div class="p-5 mb-4 bg-light rounded-3">
+        <div class="container-fluid py-5">
+            
+            <div class="row">
+                <div class="col mb-3">
+                    <div class="h-100 p-5 bg-primary-subtle text-primary-emphasis rounded-3">
+                        <h1 class="display-5 fw-bold text-uppercase">
+                            <small class="text-muted fs-6 text-capitalize">
+                                PT. Javis Teknologi Albarokah <br>
+                            </small>
+                            AI Streamer
+                        </h1>
+                        <!-- <p>(M.V.P. Prototype Version for Traffic Counting)</p> -->
+                        <p class="fs-5 text-uppercase">for Traffic Counting Devices</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="menu">
+                <div class="row">
+                    <div class="col">
+                        <div class="card">
+                            <div class="card-body">
+                                <h3 class="text-center">loading camera list...</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <p class="mt-5">
+                <h4>Referensi:</h4>
+                <a href="https://habib00ugm.files.wordpress.com/2010/07/mkji.pdf" target="_blank"
+                    class="btn btn-success btn-lg" type="button">
+                    📖 Referensi 1 (MKJI 1997)
+                </a>
+                <a href="https://binamarga.pu.go.id/uploads/files/1942/09pbm2023-pedoman-kapasitas-jalan-indonesia-.pdf"
+                    target="_blank" class="btn btn-success btn-lg" type="button">
+                    📖 Referensi 2 (PKJI 2023)
+                </a>
+            </p>
+        </div>
+    </div>
+
+    <!-- Bootstrap JavaScript Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+        integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+        crossorigin="anonymous"></script>
+
+    <!-- Latest compiled and minified JS -->
+    <script src="//code.jquery.com/jquery.js"></script>
+
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <script>
+        const DEVICE_ID = 7
+        // get url ip address
+        const be_ip = window.location.hostname
+
+        var id_device = DEVICE_ID
+        var ip_device = '172.29.141.29'
+        var device_data = {}
+
+        var device_camera_list = []
+
+        function getDeviceIp() {
+            $.ajax('http://'+be_ip+':3000/tabel_where/device/id/' + id_device, {
+                success: (data, status) => {
+                    if (data.result.length > 0) {
+                        // console.log(data.result[0])
+                        device_data = data.result[0]
+
+                        ip_device = (device_data.ip) ? device_data.ip : '172.29.109.20'
+
+                    }
+                }
+            })
+        }
+
+        function getDeviceCameraList() {
+            $.ajax('http://'+be_ip+':3000/camera_list_json/' + id_device, {
+                success: (data, status) => {
+                    device_camera_list = data
+
+                    console.log(device_camera_list)
+                    setMenu()
+                }
+            })
+        }
+
+        function setMenu() {
+            let menuItems = ''
+            let cam_ids = []
+            device_camera_list.forEach(cam => {
+                const href = ((cam.jenis_lokasi == 'simpang') ? 'view' : 'view_ruas') + '.html?id=' + cam.id + '&' + ((cam.jenis_lokasi == 'simpang') ? 'id_kaki_simpang=' : 'id_ruas=') + cam.id_key + '&id_device=' + id_device
+                const text = cam.name
+                menuItems += menuItem(cam.id,href, text)
+                cam_ids.push(cam.id)
+            })
+            document.getElementById('menu').innerHTML = menuItems
+            for (let i = 0; i < cam_ids.length; i++) {
+                getStatistic(cam_ids[i])
+            }
+        }
+
+        function menuItem(id_camera = 1, href = '', text = 'Kamera') {
+            let statisticItems = ''
+            statisticItems += statisticItem(id_camera,'sm', '🛵 Sepeda Motor (SM)')
+            statisticItems += statisticItem(id_camera,'mp', '🚗 Mobil Penumpang (MP)')
+            statisticItems += statisticItem(id_camera,'ks_b', '🚐 Bus Sedang (KS)')
+            statisticItems += statisticItem(id_camera,'ks_t', '🚚 Truck Sedang (KS)')
+            statisticItems += statisticItem(id_camera,'bb', '🚌 Bus Besar (BB)')
+            statisticItems += statisticItem(id_camera,'tb', '🚛 Truck Besar (TB)')
+
+            return `
+            <div class="row">
+                <div class="col mb-3">
+                    <div class="card  text-white bg-dark">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col">
+                                    <h3 class="card-title text-capitalize">${text}</h3>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <p>📊 Jumlah Rata-Rata Per-Jam Hari Ini:</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                ${statisticItems}
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="d-grid gap-2">
+                                        <a href="${href}" class="btn btn-success btn-lg" type="button">
+                                            Buka 🎥
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            `
+        }
+
+        function statisticItem(id_camera = 1, category = 'sm', title = 'Sepeda Motor') {
+            return `
+            <div class="col-4 mb-3">
+                <div class="card bg-warning">
+                    <div class="card-body">
+                        <h5 class="card-title">${title}</h5>
+                        <div class="row">
+                            <div class="col-6" id="stat_cam_${id_camera}_${category}_in">
+                                <h6>-<br><small class="badge text-bg-dark">(⬆️ in)</small></h6>
+                            </div>
+                            <div class="col-6" id="stat_cam_${id_camera}_${category}_out">
+                                <h6>-<br><small class="badge text-bg-dark">(⬇️ out)</small></h6>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>`
+        }
+
+        function getStatistic(id_camera = 1) {
+            let sm_in_text = 'loading...'
+            let sm_out_text = 'loading...'
+            let mp_in_text = 'loading...'
+            let mp_out_text = 'loading...'
+            let ks_b_in_text = 'loading...'
+            let ks_b_out_text = 'loading...'
+            let ks_t_in_text = 'loading...'
+            let ks_t_out_text = 'loading...'
+            let bb_in_text = 'loading...'
+            let bb_out_text = 'loading...'
+            let bt_in_text = 'loading...'
+            let bt_out_text = 'loading...'
+            let sm_in = 0
+            let sm_out = 0
+            let mp_in = 0
+            let mp_out = 0
+            let ks_b_in = 0
+            let ks_b_out = 0
+            let ks_t_in = 0
+            let ks_t_out = 0
+            let bb_in = 0
+            let bb_out = 0
+            let tb_in = 0
+            let tb_out = 0
+            document.getElementById('stat_cam_' + id_camera + '_sm_in').innerHTML = '(loading...)'
+            document.getElementById('stat_cam_' + id_camera + '_sm_out').innerHTML = '(loading...)'
+            document.getElementById('stat_cam_' + id_camera + '_mp_in').innerHTML = '(loading...)'
+            document.getElementById('stat_cam_' + id_camera + '_mp_out').innerHTML = '(loading...)'
+            document.getElementById('stat_cam_' + id_camera + '_ks_b_in').innerHTML = '(loading...)'
+            document.getElementById('stat_cam_' + id_camera + '_ks_b_out').innerHTML = '(loading...)'
+            document.getElementById('stat_cam_' + id_camera + '_ks_t_in').innerHTML = '(loading...)'
+            document.getElementById('stat_cam_' + id_camera + '_ks_t_out').innerHTML = '(loading...)'
+            document.getElementById('stat_cam_' + id_camera + '_bb_in').innerHTML = '(loading...)'
+            document.getElementById('stat_cam_' + id_camera + '_bb_out').innerHTML = '(loading...)'
+            document.getElementById('stat_cam_' + id_camera + '_tb_in').innerHTML = '(loading...)'
+            document.getElementById('stat_cam_' + id_camera + '_tb_out').innerHTML = '(loading...)'
+            $.ajax('http://'+be_ip+':3000/report_jam/' + id_camera, {
+                success: function (data) {
+                    if (data.result.length > 0) {
+                        data.result.forEach(item => {
+                            sm_in += item.sm_in
+                            sm_out += item.sm_out
+                            mp_in += item.mp_in
+                            mp_out += item.mp_out
+                            ks_b_in += item.ks_b_in
+                            ks_b_out += item.ks_b_out
+                            ks_t_in += item.ks_t_in
+                            ks_t_out += item.ks_t_out
+                            bb_in += item.bb_in
+                            bb_out += item.bb_out
+                            tb_in += item.tb_in
+                            tb_out += item.tb_out
+                        })
+                        // count average
+                        sm_in = sm_in / data.result.length
+                        sm_out = sm_out / data.result.length
+                        mp_in = mp_in / data.result.length
+                        mp_out = mp_out / data.result.length
+                        ks_b_in = ks_b_in / data.result.length
+                        ks_b_out = ks_b_out / data.result.length
+                        ks_t_in = ks_t_in / data.result.length
+                        ks_t_out = ks_t_out / data.result.length
+                        bb_in = bb_in / data.result.length
+                        bb_out = bb_out / data.result.length
+                        tb_in = tb_in / data.result.length
+                        tb_out = tb_out / data.result.length
+                        // set text limit 2 digit float
+                        sm_in_text = sm_in.toFixed(2)
+                        sm_out_text = sm_out.toFixed(2)
+                        mp_in_text = mp_in.toFixed(2)
+                        mp_out_text = mp_out.toFixed(2)
+                        ks_b_in_text = ks_b_in.toFixed(2)
+                        ks_b_out_text = ks_b_out.toFixed(2)
+                        ks_t_in_text = ks_t_in.toFixed(2)
+                        ks_t_out_text = ks_t_out.toFixed(2)
+                        bb_in_text = bb_in.toFixed(2)
+                        bb_out_text = bb_out.toFixed(2)
+                        tb_in_text = tb_in.toFixed(2)
+                        tb_out_text = tb_out.toFixed(2)
+                    }else{
+                        sm_in_text = '(no data)'
+                        sm_out_text = '(no data)'
+                        mp_in_text = '(no data)'
+                        mp_out_text = '(no data)'
+                        ks_b_in_text = '(no data)'
+                        ks_b_out_text = '(no data)'
+                        ks_t_in_text = '(no data)'
+                        ks_t_out_text = '(no data)'
+                        bb_in_text = '(no data)'
+                        bb_out_text = '(no data)'
+                        tb_in_text = '(no data)'
+                        tb_out_text = '(no data)'
+                    }
+                    document.getElementById('stat_cam_' + id_camera + '_sm_in').innerHTML = sm_in_text + '<br><small class="badge text-bg-dark">(⬆️ in)</small>'
+                    document.getElementById('stat_cam_' + id_camera + '_sm_out').innerHTML = sm_out_text + '<br><small class="badge text-bg-dark">(⬇️ out)</small>'
+                    document.getElementById('stat_cam_' + id_camera + '_mp_in').innerHTML = mp_in_text + '<br><small class="badge text-bg-dark">(⬆️ in)</small>'
+                    document.getElementById('stat_cam_' + id_camera + '_mp_out').innerHTML = mp_out_text + '<br><small class="badge text-bg-dark">(⬇️ out)</small>'
+                    document.getElementById('stat_cam_' + id_camera + '_ks_b_in').innerHTML = ks_b_in_text + '<br><small class="badge text-bg-dark">(⬆️ in)</small>'
+                    document.getElementById('stat_cam_' + id_camera + '_ks_b_out').innerHTML = ks_b_out_text + '<br><small class="badge text-bg-dark">(⬇️ out)</small>'
+                    document.getElementById('stat_cam_' + id_camera + '_ks_t_in').innerHTML = ks_t_in_text + '<br><small class="badge text-bg-dark">(⬆️ in)</small>'
+                    document.getElementById('stat_cam_' + id_camera + '_ks_t_out').innerHTML = ks_t_out_text + '<br><small class="badge text-bg-dark">(⬇️ out)</small>'
+                    document.getElementById('stat_cam_' + id_camera + '_bb_in').innerHTML = bb_in_text + '<br><small class="badge text-bg-dark">(⬆️ in)</small>'
+                    document.getElementById('stat_cam_' + id_camera + '_bb_out').innerHTML = bb_out_text + '<br><small class="badge text-bg-dark">(⬇️ out)</small>'
+                    document.getElementById('stat_cam_' + id_camera + '_tb_in').innerHTML = tb_in_text + '<br><small class="badge text-bg-dark">(⬆️ in)</small>'
+                    document.getElementById('stat_cam_' + id_camera + '_tb_out').innerHTML = tb_out_text + '<br><small class="badge text-bg-dark">(⬇️ out)</small>'
+                },
+                error: function () {
+                    console.log('error get data')
+                    document.getElementById('stat_cam_' + id_camera + '_sm_in').innerHTML = '(connection error)' + '<br><small class="badge text-bg-dark">(⬆️ in)</small>'
+                    document.getElementById('stat_cam_' + id_camera + '_sm_out').innerHTML = '(connection error)' + '<br><small class="badge text-bg-dark">(⬇️ out)</small>'
+                    document.getElementById('stat_cam_' + id_camera + '_mp_in').innerHTML = '(connection error)' + '<br><small class="badge text-bg-dark">(⬆️ in)</small>'
+                    document.getElementById('stat_cam_' + id_camera + '_mp_out').innerHTML = '(connection error)' + '<br><small class="badge text-bg-dark">(⬇️ out)</small>'
+                    document.getElementById('stat_cam_' + id_camera + '_ks_b_in').innerHTML = '(connection error)' + '<br><small class="badge text-bg-dark">(⬆️ in)</small>'
+                    document.getElementById('stat_cam_' + id_camera + '_ks_b_out').innerHTML = '(connection error)' + '<br><small class="badge text-bg-dark">(⬇️ out)</small>'
+                    document.getElementById('stat_cam_' + id_camera + '_ks_t_in').innerHTML = '(connection error)' + '<br><small class="badge text-bg-dark">(⬆️ in)</small>'
+                    document.getElementById('stat_cam_' + id_camera + '_ks_t_out').innerHTML = '(connection error)' + '<br><small class="badge text-bg-dark">(⬇️ out)</small>'
+                    document.getElementById('stat_cam_' + id_camera + '_bb_in').innerHTML = '(connection error)' + '<br><small class="badge text-bg-dark">(⬆️ in)</small>'
+                    document.getElementById('stat_cam_' + id_camera + '_bb_out').innerHTML = '(connection error)' + '<br><small class="badge text-bg-dark">(⬇️ out)</small>'
+                    document.getElementById('stat_cam_' + id_camera + '_tb_in').innerHTML = '(connection error)' + '<br><small class="badge text-bg-dark">(⬆️ in)</small>'
+                    document.getElementById('stat_cam_' + id_camera + '_tb_out').innerHTML = '(connection error)' + '<br><small class="badge text-bg-dark">(⬇️ out)</small>'
+                    // wait 5 seconds and try again
+                    setTimeout(getData, 5000)
+                }
+            })
+        }
+
+        getDeviceIp()
+        getDeviceCameraList()
+    </script>
+</body>
+
+</html>

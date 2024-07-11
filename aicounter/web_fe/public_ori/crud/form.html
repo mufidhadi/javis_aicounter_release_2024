@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>AI Counter</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+    <!-- Bootstrap CSS v5.2.1 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
+    <style>
+        #image {
+            width: 100%;
+        }
+
+        #data_smp {
+            display: none;
+        }
+
+        .nav-link,
+        #judul {
+            text-transform: capitalize;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="row mt-5">
+            <div class="col">
+                <a href="" class="btn btn-dark" id="kembali">
+                    ⬅️
+                    Kembali
+                </a>
+            </div>
+        </div>
+
+        <div class="row mt-5">
+            <div class="col">
+                <h1 class="text-center">
+                    <span>Edit </span>
+                    <span id="judul"></span>
+                </h1>
+            </div>
+        </div>
+
+        <div class="row mt-5 mb-2">
+            <div class="col">
+
+                <form action="" method="get" role="form" id="form">
+                
+                    <div id="form_item">
+                        
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col mb-3">
+                            <button type="submit" class="btn btn-primary">Simpan</button>
+                        </div>
+                    </div>
+                </form>
+                
+
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Bootstrap JavaScript Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+        integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+        crossorigin="anonymous"></script>
+
+    <!-- Latest compiled and minified JS -->
+    <script src="//code.jquery.com/jquery.js"></script>
+
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <script>
+        // get url ip address
+        const be_ip = window.location.hostname
+
+        const params = new URLSearchParams(window.location.search)
+
+        var nama_tabel = params.get('tabel')
+        var primary_key_name = 'id'
+        var form_action = params.get('action') ? params.get('action') : 'insert'
+        var primary_key_value = params.get('id') ? params.get('id') : 1
+        var id = primary_key_value
+
+        const from_page = params.get('from_page') ? params.get('from_page') : 'read.html'
+
+        document.getElementById('kembali').href = from_page + window.location.search
+
+        document.getElementById('judul').innerText = nama_tabel.replace(/_/g, ' ')
+
+        function objectToQueryString(obj) {
+            const keyValuePairs = [];
+            for (const key in obj) {
+                if (obj.hasOwnProperty(key)) {
+                    keyValuePairs.push(encodeURIComponent(key) + '=' + encodeURIComponent(obj[key]));
+                }
+            }
+            return keyValuePairs.join('&');
+        }
+
+        function getData() {
+            const url = 'http://'+be_ip+':3000/tabel_where/' + nama_tabel + '/' + primary_key_name + '/' + primary_key_value
+            $.ajax(url, {
+                success: (data, status) => {
+                    if (data.result.length > 0) {
+                        const res_data = data.result[0]
+                        let data_keys = Object.keys(res_data)
+                        let form_item_html = ''
+                        data_keys.forEach(key_name => {
+                            if (key_name != primary_key_name) {
+                                form_item_html += input_item_basic(key_name, res_data[key_name])
+                            }
+                        })
+                        document.getElementById('form_item').innerHTML = form_item_html
+                    }
+                }
+            })
+        }
+
+        getData()
+
+        function input_item_basic(name,value) {
+            return `
+            <div class="row">
+                <div class="col mb-3">
+                    <label for="" class="form-label">${name.replace(/_/g, ' ')}</label>
+                    <input type="text" class="form-control" name="${name}" id="${name}" placeholder="${name.replace(/_/g, ' ')}" value="${value}" />
+                </div>
+            </div>
+            `
+        }
+
+        document.getElementById('form').addEventListener('submit', (event) => {
+            // prevent default action
+            event.preventDefault()
+            submit()
+        })
+
+        function submit() {
+            const form = document.getElementById('form')
+            
+            const formData = new FormData(form)
+            const data = objectToQueryString(Object.fromEntries(formData))
+            console.log(data)
+
+            const url = 'http://'+be_ip+':3000/tabel/' + nama_tabel + '/' + form_action + ((form_action == 'update')? ('/' + primary_key_value) : '') + '?' + data
+            $.ajax(url, {
+                success: (data, status) => {
+                    alert('Data updated')
+                },
+                error: (xhr, status) => {
+                    alert('Error update data')
+                }
+            })
+        }
+    </script>
+</body>
+
+</html>

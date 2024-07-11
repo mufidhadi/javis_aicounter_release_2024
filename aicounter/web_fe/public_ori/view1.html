@@ -1,0 +1,538 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>AI Counter</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+    <!-- Bootstrap CSS v5.2.1 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
+    <style>
+        #image {
+            width: 100%;
+        }
+
+        #data_smp {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand navbar-light bg-light">
+        <div class="container-fluid">
+            <div class="col-1"></div>
+            <div class="col-11">
+                <ul class="nav navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Beranda</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="view1.html">Maguwo Utara</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="view2.html">Maguwo Timur</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="view3.html">Maguwo Barat</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="row mt-5 mb-2">
+            <div class="col-8">
+                <img src="" alt="" class="img-fluid" id="image">
+            </div>
+            <div class="col-4">
+                <div class="row">
+                    <div class="col">
+                        <h3>Realtime Count</h3>
+                        <h5>⬆️ IN : <span id="smp_in">0</span> (SMP/menit)</h5>
+
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>SM</th>
+                                    <th>MP</th>
+                                    <th>KS</th>
+                                    <th>TB</th>
+                                    <th>BB</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td id="sm_in">0</td>
+                                    <td id="mp_in">0</td>
+                                    <td id="ks_in">0</td>
+                                    <td id="tb_in">0</td>
+                                    <td id="bb_in">0</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h5>⬇️ OUT: <span id="smp_out">0</span> (SMP/menit)</h5>
+
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>SM</th>
+                                    <th>MP</th>
+                                    <th>KS</th>
+                                    <th>TB</th>
+                                    <th>BB</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td id="sm_out">0</td>
+                                    <td id="mp_out">0</td>
+                                    <td id="ks_out">0</td>
+                                    <td id="tb_out">0</td>
+                                    <td id="bb_out">0</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <p id="data_smp"></p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <h3>Historical Count</h3>
+                        <!-- <h5>Average : <span id="smp_in">0</span> (SMP/menit)</h5> -->
+                        <h5>Total : <span id="smp_sum">0</span> (SMP/jam)</h5>
+
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>SM</th>
+                                    <th>MP</th>
+                                    <th>KS</th>
+                                    <th>TB</th>
+                                    <th>BB</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td id="sm_sum">0</td>
+                                    <td id="mp_sum">0</td>
+                                    <td id="ks_sum">0</td>
+                                    <td id="tb_sum">0</td>
+                                    <td id="bb_sum">0</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <h3>Kinerja Kaki Simpang</h3>
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>J</th>
+                                    <th>C</th>
+                                    <th>SMP</th>
+                                    <th>SMP <sub>bki</sub></th>
+                                    <th>SMP <sub>bka</sub></th>
+                                    <th>DS</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td id="nilai_j">0</td>
+                                    <td id="nilai_c">0</td>
+                                    <td id="smp_total">0</td>
+                                    <td id="smp_bki">0</td>
+                                    <td id="smp_bka">0</td>
+                                    <td id="nilai_ds">0</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <h3>pengaturan variabel kapasitas kaki simpang</h3>
+            </div>
+        </div>
+        <div class="row mt-2 mb-2">
+            <div class="col">
+                <label for="" class="form-label">waktu hijau</label>
+                <input type="number" min="0" class="form-control" name="waktu_hijau" id="waktu_hijau" />
+            </div>
+        </div>
+        <div class="row mt-2 mb-2">
+            <div class="col">
+                <label for="" class="form-label">total siklus</label>
+                <input type="number" min="0" class="form-control" name="total_siklus" id="total_siklus" />
+            </div>
+        </div>
+        <div class="row mt-2 mb-2">
+            <div class="col">
+                <label for="" class="form-label">tipe lingkungan</label>
+                <select class="form-select" name="tipe_lingkungan" id="tipe_lingkungan">
+                    <option value="komersial">komersial</option>
+                    <option value="permukiman">permukiman</option>
+                    <option value="akses terbatas">akses terbatas</option>
+                </select>
+            </div>
+        </div>
+        <div class="row mt-2 mb-2">
+            <div class="col">
+                <label for="" class="form-label">tipe fase</label>
+                <select class="form-select" name="tipe_fase" id="tipe_fase">
+                    <option value="terlawan">terlawan</option>
+                    <option value="terlindung">terlindung</option>
+                </select>
+            </div>
+        </div>
+        <div class="row mt-2 mb-2">
+            <div class="col">
+                <label for="" class="form-label">jumlah juta penduduk kota</label>
+
+                <!-- <div class="input-group">
+                    <input type="number" class="form-control" name="jumlah_juta_penduduk_kota"
+                        id="jumlah_juta_penduduk_kota" />
+                    <div class="input-group-text">
+                        Juta jiwa
+                    </div>
+                </div> -->
+
+                <select class="form-select" name="jumlah_juta_penduduk_kota" id="jumlah_juta_penduduk_kota">
+                    <option value="2.9">3.0 s/d 1.0 juta jiwa</option>
+                    <option value="0.9">1.0 s/d 0.5 juta jiwa</option>
+                    <option value="0.4">0.5 s/d 0.1 juta jiwa</option>
+                    <option value="0.09">0.1 s/d 0.082 juta jiwa</option>
+                </select>
+
+            </div>
+        </div>
+        <div class="row mt-2 mb-2">
+            <div class="col">
+                <label for="" class="form-label">tipe hambatan samping</label>
+                <select class="form-select" name="tipe_hambatan_samping" id="tipe_hambatan_samping">
+                    <option value="tinggi">tinggi</option>
+                    <option value="sedang">sedang</option>
+                    <option value="rendah">rendah</option>
+                </select>
+            </div>
+        </div>
+        <div class="row mt-2 mb-2">
+            <div class="col">
+                <label for="" class="form-label">lebar efektif pendekat</label>
+                <input type="text" class="form-control" name="lebar_efektif_pendekat" id="lebar_efektif_pendekat" />
+            </div>
+        </div>
+        <input type="hidden" class="form-control" name="id_" id="id_" />
+        <div class="row mt-2 mb-5">
+            <div class="col">
+                <div class="d-grid gap-2">
+                    <button type="button" name="simpan" id="simpan" class="btn btn-primary">
+                        Simpan Pengaturan
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Bootstrap JavaScript Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+        integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+        crossorigin="anonymous"></script>
+
+    <!-- Latest compiled and minified JS -->
+    <script src="//code.jquery.com/jquery.js"></script>
+
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <script src="c_simpang_apill.js"></script>
+
+    <script>
+        // Test values
+        var waktu_hijau = 400; // directs
+        var total_siklus = 440; // directs
+
+        var tipe_lingkungan = 'permukiman'; // survei
+        var tipe_fase = 'terlawan'; // survei
+        var jumlah_juta_penduduk_kota = 0.5; // survei
+        var tipe_hambatan_samping = 'sedang'; // survei (sangat rendah, rendah, sedang, tinggi, dan sangat tinggi) mkji2023.pdf hal 109
+        var lebar_efektif_pendekat = 6; // survei
+        // var lebar_pendekat = 6; // survei
+        // var jarak_garis_henti_ke_kendaraan_pertama_kiri = 1; // survei
+
+        var jumlah_belok_kiri = Math.floor(Math.random() * 100); // klasifikasi (belok kiri = jumlah smp kaki simpang sisi kiri X, selama X sedang fase hijau)
+        var jumlah_belok_kanan = Math.floor(Math.random() * 100); // klasifikasi (belok kanan = jumlah smp kaki simpang sisi kanan X, selama X sedang fase hijau)
+        var jumlah_smp_total = jumlah_belok_kanan + jumlah_belok_kiri + Math.floor(Math.random() * 100); // klasifikasi
+        var jumlah_kendaraan_tak_bermotor = jumlah_smp_total * 0.05; // klasifikasi
+
+        function updateHitungan() {
+            let hasil = hitung(
+                waktu_hijau,
+                total_siklus,
+                lebar_efektif_pendekat,
+                tipe_lingkungan,
+                tipe_hambatan_samping,
+                tipe_fase,
+                jumlah_kendaraan_tak_bermotor,
+                jumlah_juta_penduduk_kota,
+                jumlah_belok_kiri,
+                jumlah_belok_kanan,
+                jumlah_smp_total,
+                // jarak_garis_henti_ke_kendaraan_pertama_kiri,
+                // lebar_pendekat
+            )
+    
+            document.getElementById('nilai_j').innerText = Math.round((hasil.nilai_j + Number.EPSILON) * 100) / 100
+            document.getElementById('nilai_c').innerText = Math.round((hasil.nilai_c + Number.EPSILON) * 100) / 100
+
+            nilai_j = hasil.nilai_j
+            nilai_c = hasil.nilai_c
+    
+            console.log(hasil)
+        }
+
+        updateHitungan()
+
+    </script>
+
+    <script>
+        const id = 1
+
+        var nilai_c = 0
+        var nilai_j = 0
+        var nilai_ds = 0
+        // var nilai_smp_total = 0
+
+        function wsDisplayImage() {
+            // WebSocket connection
+            // const ws2 = new WebSocket('ws://localhost:8081/');
+            const ws2 = new WebSocket('ws://172.29.109.20:8081/');
+
+            // Function to handle incoming WebSocket messages
+            ws2.onmessage = function (event) {
+                // Parse the received JSON data
+                console.log(event);
+                const data = JSON.parse(event.data);
+
+                // Check if the received message contains 'frame' data
+                if (data['streams_cam' + id]) {
+                    document.getElementById('image').src = 'data:image/jpeg;base64,' + data['streams_cam' + id];
+                }
+            }
+
+            ws2.onerror = function () {
+                wsDisplayImage()
+            }
+            ws2.onclose = function () {
+                wsDisplayImage()
+            }
+        }
+
+        function wsDisplayText() {
+            // WebSocket connection
+            // const ws = new WebSocket('ws://localhost:8080/');
+            const ws = new WebSocket('ws://172.29.109.20:8080/');
+
+            // Function to handle incoming WebSocket messages
+            ws.onmessage = function (event) {
+                // Parse the received JSON data
+                // console.log(event);
+                const data = JSON.parse(event.data);
+
+                if (data.id_kamera) {
+                    if (data.id_kamera == id) {
+                        document.getElementById('data_smp').innerText = event.data
+
+                        document.getElementById('smp_in').innerText = data.smp_in
+                        document.getElementById('smp_out').innerText = data.smp_out
+
+                        document.getElementById('sm_in').innerText = objekAiCount(data.objek_in, 'person') + objekAiCount(data.objek_in, 'motorcycle')
+                        document.getElementById('mp_in').innerText = objekAiCount(data.objek_in, 'car')
+                        document.getElementById('ks_in').innerText = objekAiCount(data.objek_in, 'truck') + objekAiCount(data.objek_in, 'bus')
+                        document.getElementById('tb_in').innerText = 0.0
+                        document.getElementById('bb_in').innerText = 0.0
+
+                        document.getElementById('sm_out').innerText = objekAiCount(data.objek_out, 'person') + objekAiCount(data.objek_out, 'motorcycle')
+                        document.getElementById('mp_out').innerText = objekAiCount(data.objek_out, 'car')
+                        document.getElementById('ks_out').innerText = objekAiCount(data.objek_out, 'truck') + objekAiCount(data.objek_out, 'bus')
+                        document.getElementById('tb_out').innerText = 0.0
+                        document.getElementById('bb_out').innerText = 0.0
+                    }
+                }
+            }
+
+            ws.onerror = function () {
+                wsDisplayText()
+            }
+            ws.onclose = function () {
+                wsDisplayText()
+            }
+        }
+
+        function objekAiCount(objek, nama) {
+            let count = 0
+            objek.forEach(obj => {
+                if (obj.name == nama) {
+                    count = obj.count
+                }
+            })
+            return count
+        }
+
+        function getTotalSMPHour() {
+            $.ajax('http://localhost:3000/average_last_hour/' + id, {
+                success: (data, status) => {
+                    if (data.result.length > 0) {
+                        // console.log(data.result[0])
+                        const sum_count = data.result[0]
+                        document.getElementById('smp_sum').innerText = sum_count.smp_in + sum_count.smp_out
+                        document.getElementById('sm_sum').innerText = sum_count.sm
+                        document.getElementById('mp_sum').innerText = sum_count.mp
+                        document.getElementById('ks_sum').innerText = sum_count.ks
+                        document.getElementById('tb_sum').innerText = sum_count.tb
+                        document.getElementById('bb_sum').innerText = sum_count.bb
+
+                        
+                        updateHitungan()
+                        jumlah_smp_total = sum_count.smp_in + sum_count.smp_out
+                        document.getElementById('smp_total').innerText = jumlah_smp_total
+                        nilai_ds = jumlah_smp_total / nilai_c
+                        if (jumlah_smp_total<1) {
+                            nilai_ds = 0.0
+                        }
+                        document.getElementById('nilai_ds').innerText = Math.round((nilai_ds + Number.EPSILON) * 100) / 100
+                    }
+                }
+            })
+        }
+
+        function getDataKakiSimpang() {
+            document.getElementById('simpan').onclick = insertSimpangKakiData
+            $.ajax('http://localhost:3000/simpang_kaki_data/' + id, {
+                success: (data, status) => {
+                    if (data.result.length > 0) {
+                        // console.log(data.result[0])
+                        const kaki = data.result[0]
+                        document.getElementById('waktu_hijau').value = kaki.waktu_hijau
+                        document.getElementById('total_siklus').value = kaki.total_siklus
+                        document.getElementById('tipe_lingkungan').value = kaki.tipe_lingkungan
+                        document.getElementById('tipe_fase').value = kaki.tipe_fase
+                        document.getElementById('jumlah_juta_penduduk_kota').value = kaki.jumlah_juta_penduduk_kota
+                        document.getElementById('tipe_hambatan_samping').value = kaki.tipe_hambatan_samping
+                        document.getElementById('lebar_efektif_pendekat').value = kaki.lebar_efektif_pendekat
+                        document.getElementById('simpan').onclick = updateSimpangKakiData
+                        
+                        waktu_hijau = kaki.waktu_hijau
+                        total_siklus = kaki.total_siklus
+                        tipe_lingkungan = kaki.tipe_lingkungan
+                        tipe_fase = kaki.tipe_fase
+                        jumlah_juta_penduduk_kota = kaki.jumlah_juta_penduduk_kota
+                        tipe_hambatan_samping = kaki.tipe_hambatan_samping
+                        lebar_efektif_pendekat = kaki.lebar_efektif_pendekat
+                        
+                        updateHitungan()
+                    }
+                }
+            })
+        }
+
+        function insertSimpangKakiData() {
+            const data = {
+                id_simpang_kaki: id,
+                waktu_hijau: document.getElementById('waktu_hijau').value,
+                total_siklus: document.getElementById('total_siklus').value,
+                tipe_lingkungan: document.getElementById('tipe_lingkungan').value,
+                tipe_fase: document.getElementById('tipe_fase').value,
+                jumlah_juta_penduduk_kota: document.getElementById('jumlah_juta_penduduk_kota').value,
+                tipe_hambatan_samping: document.getElementById('tipe_hambatan_samping').value,
+                lebar_efektif_pendekat: document.getElementById('lebar_efektif_pendekat').value,
+            }
+            // http://localhost:3000/tabel/simpang/insert?nama=tajem%20utara&lat=176.168
+            document.getElementById('simpan').disabled = true
+            document.getElementById('simpan').innerText = 'menyimpan...'
+            let url = 'http://localhost:3000/tabel/simpang_kaki_data/insert?'+objectToQueryString(data)
+            $.ajax(url,{
+                success:(data,status)=>{
+                    document.getElementById('simpan').disabled = false
+                    document.getElementById('simpan').innerText = 'simpan'
+                    document.getElementById('simpan').onclick = updateSimpangKakiData
+                    updateHitungan()
+                },
+                error:(xhr,status)=>{
+                    document.getElementById('simpan').disabled = false
+                    document.getElementById('simpan').innerText = 'simpan'
+                    document.getElementById('simpan').onclick = insertSimpangKakiData
+                }
+            })
+        }
+
+        function updateSimpangKakiData() {
+            const id_ = document.getElementById('id_').value
+            const data = {
+                id_simpang_kaki: id,
+                waktu_hijau: document.getElementById('waktu_hijau').value,
+                total_siklus: document.getElementById('total_siklus').value,
+                tipe_lingkungan: document.getElementById('tipe_lingkungan').value,
+                tipe_fase: document.getElementById('tipe_fase').value,
+                jumlah_juta_penduduk_kota: document.getElementById('jumlah_juta_penduduk_kota').value,
+                tipe_hambatan_samping: document.getElementById('tipe_hambatan_samping').value,
+                lebar_efektif_pendekat: document.getElementById('lebar_efektif_pendekat').value,
+            }
+            // http://localhost:3000/tabel/simpang/update/4?nama=tajem%20utara&lat=176.168
+            document.getElementById('simpan').disabled = true
+            document.getElementById('simpan').innerText = 'menyimpan...'
+            let url = 'http://localhost:3000/tabel/simpang_kaki_data/update/'+id_+'?'+objectToQueryString(data)
+            $.ajax(url,{
+                success:(data,status)=>{
+                    document.getElementById('simpan').disabled = false
+                    document.getElementById('simpan').innerText = 'simpan'
+                    document.getElementById('simpan').onclick = updateSimpangKakiData
+                    updateHitungan()
+                },
+                error:(xhr,status)=>{
+                    document.getElementById('simpan').disabled = false
+                    document.getElementById('simpan').innerText = 'simpan'
+                    document.getElementById('simpan').onclick = insertSimpangKakiData
+                }
+            })
+        }
+
+        function objectToQueryString(obj) {
+            const keyValuePairs = [];
+            for (const key in obj) {
+                if (obj.hasOwnProperty(key)) {
+                    keyValuePairs.push(encodeURIComponent(key) + '=' + encodeURIComponent(obj[key]));
+                }
+            }
+            return keyValuePairs.join('&');
+        }
+
+        wsDisplayText()
+        wsDisplayImage()
+        getTotalSMPHour()
+        getDataKakiSimpang()
+
+        setInterval(() => {
+            getTotalSMPHour()
+        }, 60 * 1000);
+    </script>
+</body>
+
+</html>

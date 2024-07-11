@@ -1,0 +1,26 @@
+[
+    {
+        "id": 14,
+        "name": "depan javis",
+        "rtsp": "rtsp://root:JTAlbarokah313@192.168.0.203/live2.sdp",
+        "output_res":"240p",
+        "id_key": 3,
+        "jenis_lokasi": "ruas_dalam_kota",
+        "is_set_to_run": true,
+        "line": {
+            "start": {
+                "x": 0.0,
+                "y": 0.4
+            },
+            "end": {
+                "x": 1.0,
+                "y": 0.4
+            }
+        },
+        "presence_detector": {
+            "active": true,
+            "id": 1,
+            "fase": 1
+        }
+    }
+]

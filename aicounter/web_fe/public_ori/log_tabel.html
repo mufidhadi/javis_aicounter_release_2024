@@ -1,0 +1,703 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>AI Counter Simpang APILL</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+    <!-- Bootstrap CSS v5.2.1 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
+    <style>
+        #image {
+            width: 100%;
+        }
+
+        #data_smp {
+            display: none;
+        }
+
+        .nav-link,
+        #judul {
+            text-transform: capitalize;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand navbar-light bg-light">
+        <div class="container-fluid">
+            <div class="col-1"></div>
+            <div class="col-11">
+                <ul class="nav navbar-nav" id="navbar">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Beranda</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="view.html?id=1&id_kaki_simpang=1&id_device=1">Maguwo Utara</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="view.html?id=2&id_kaki_simpang=2&id_device=1">Maguwo Timur</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="view.html?id=3&id_kaki_simpang=3&id_device=1">Maguwo Barat</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="view_ruas.html?id=8&id_ruas=1&id_device=1">Maguwo Timur (ruas)</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+
+        <div class="row mt-5">
+            <div class="col-2">
+                <a href="view.html" class="btn btn-dark" id="kembali">
+                    ⬅️
+                    Kembali
+                </a>
+            </div>
+            <div class="col">
+                <div class="row">
+                    <div class="col-3 text-end">
+                        <h5>Range Data :</h5>
+                    </div>
+                    <div class="col">
+                        <div class="input-group">
+                            <span class="input-group-text">Mulai</span>
+                            <input type="date" name="start_date" id="start_date" class="form-control"
+                                placeholder="Tanggal Mulai" />
+                            <span class="input-group-text">Hingga:</span>
+                            <input type="date" name="end_date" id="end_date" class="form-control"
+                                placeholder="Tanggal Akhir" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-3 text-end">
+                        <h5>Tampilan Data :</h5>
+                    </div>
+                    <div class="col d-flex">
+                        <div class="d-grid gap-2">
+                            <div class="btn-group mb-3">
+                                <button class="btn btn-dark" id="btn_permenit" disabled="true">Per-menit</button>
+                                <button class="btn btn-dark" id="btn_perjam">Per-jam</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-5">
+            <div class="col">
+                <hr>
+            </div>
+        </div>
+
+        <div class="row mt-5">
+            <div class="col">
+                <div class="card text-bg-success">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col">
+                                <h5>Download Laporan Excel</h5>
+                            </div>
+                            <div class="col text-end">
+                                <a href="" target="_blank" class="btn btn-dark" id="download_btn">
+                                    💾 Download
+                                </a>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-5">
+            <div class="col">
+                <hr>
+            </div>
+        </div>
+
+        <div class="row mt-5">
+            <div class="col">
+                <h1 class="text-center">
+                    <span>Chart Data Lengkap </span>
+                    <span id="judul"></span>
+                </h1>
+            </div>
+        </div>
+
+        <div class="row mt-5 mb-2">
+            <div class="col">
+                <h3>Data Counting</h3>
+                <canvas id="chart"></canvas>
+            </div>
+        </div>
+
+        <div class="row mt-5 mb-2">
+            <div class="col">
+                <h3>Data SMP</h3>
+                <canvas id="chart_smp"></canvas>
+            </div>
+        </div>
+
+        <div class="row mt-5">
+            <div class="col">
+                <hr>
+            </div>
+        </div>
+
+        <div class="row mt-5">
+            <div class="col">
+                <h1 class="text-center">
+                    <span>Tabel Data Lengkap </span>
+                    <span id="judul"></span>
+                </h1>
+            </div>
+        </div>
+
+        <div class="row mt-5 mb-2">
+
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th rowspan="2">waktu</th>
+                        <th colspan="2">Sepeda Motor (SM)</th>
+                        <th colspan="2">Mobil Penumpang (MP)</th>
+                        <th colspan="4">Bus dan Truk (KS)</th>
+                        <th colspan="2">Bus Besar (BB)</th>
+                        <th colspan="2">Truk Besar (TB)</th>
+                        <th colspan="2">SMP/menit</th>
+                    </tr>
+                    <tr>
+                        <!-- SM -->
+                        <th>in</th>
+                        <th>out</th>
+
+                        <!-- MP -->
+                        <th>in</th>
+                        <th>out</th>
+
+                        <!-- KS -->
+                        <th>Bus in</th>
+                        <th>Bus out</th>
+                        <th>Truck in</th>
+                        <th>Truck out</th>
+
+                        <!-- TB -->
+                        <th>in</th>
+                        <th>out</th>
+
+                        <!-- BB -->
+                        <th>in</th>
+                        <th>out</th>
+
+                        <!-- SMP -->
+                        <th>in</th>
+                        <th>out</th>
+
+                    </tr>
+                </thead>
+                <tbody id="data">
+
+                </tbody>
+            </table>
+
+            <!-- pagination -->
+            <div class="btn-group" role="group" id="pagination" style="display: none;">
+                <button type="button" class="btn btn-primary" onclick="prev()" id="prev">
+                    ⬅️
+                </button>
+                <button type="button" class="btn btn-light">
+                    1
+                </button>
+                <button type="button" class="btn btn-primary" onclick="next()" id="next">
+                    ➡️
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+
+
+    <!-- Bootstrap JavaScript Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+        integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+        crossorigin="anonymous"></script>
+
+    <!-- Latest compiled and minified JS -->
+    <script src="//code.jquery.com/jquery.js"></script>
+
+    <script src="chart.js"></script>
+
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <script src="hitung_smp.js"></script>
+
+    <script>
+        // get url ip address
+        const be_ip = window.location.hostname
+
+        const params = new URLSearchParams(window.location.search)
+
+        document.getElementById('kembali').href = 'view.html' + window.location.search
+
+        const id = (params.get('id')) ? params.get('id') : 1
+        const id_kaki_simpang = (params.get('id_kaki_simpang')) ? params.get('id_kaki_simpang') : 1
+        const id_device = (params.get('id_device')) ? params.get('id_device') : 1
+
+        var ip_device = '172.29.109.20'
+        var device_data = {}
+        var camera_data = {}
+
+        var device_camera_list = []
+
+        var nilai_c = 0
+        var nilai_j = 0
+        var nilai_ds = 0
+        // var nilai_smp_total = 0
+
+        function getDeviceIp() {
+            $.ajax('http://'+be_ip+':3000/tabel_where/device/id/' + id_device, {
+                success: (data, status) => {
+                    if (data.result.length > 0) {
+                        // console.log(data.result[0])
+                        device_data = data.result[0]
+
+                        ip_device = (device_data.ip) ? device_data.ip : '172.29.109.20'
+
+                    }
+                }
+            })
+        }
+
+        function getDeviceCameraList() {
+            $.ajax('http://'+be_ip+':3000/camera_list_json/' + id_device, {
+                success: (data, status) => {
+                    device_camera_list = data
+
+                    console.log(device_camera_list)
+                    getCameraData()
+                    setNavbar()
+                }
+            })
+        }
+
+        function getCameraData() {
+            camera_data = device_camera_list.find((x) => x.id == id)
+            console.log(camera_data)
+            document.getElementById('judul').innerText = camera_data.name
+
+            if (camera_data.jenis_lokasi != 'simpang') {
+                document.getElementById('kembali').href = 'view_ruas.html' + window.location.search
+            }
+            const curr_date = new Date()
+            document.getElementById('start_date').value = curr_date.toISOString().substring(0, 10)
+            document.getElementById('end_date').value = curr_date.toISOString().substring(0, 10)
+            updateDownloadBtn()
+        }
+
+        function updateDownloadBtn() {
+            document.getElementById('download_btn').href = 'http://'+be_ip+':3000/report_excel/' + id + '?' + 'start_date=' + document.getElementById('start_date').value + '&end_date=' + document.getElementById('end_date').value
+
+            document.getElementById('start_date').onchange = () => {
+                updateDownloadBtn()
+                getTabel()
+            }
+            document.getElementById('end_date').onchange = () => {
+                updateDownloadBtn()
+                getTabel()
+            }
+        }
+
+        function setNavbar() {
+            let navItems = `<li class="nav-item"><a class="nav-link" href="index.html">beranda</a></li>
+            `
+            device_camera_list.forEach(cam => {
+                const href = ((cam.jenis_lokasi == 'simpang') ? 'view' : 'view_ruas') + '.html?id=' + cam.id + '&' + ((cam.jenis_lokasi == 'simpang') ? 'id_kaki_simpang=' : 'id_ruas=') + cam.id_key + '&id_device=' + id_device
+                const text = cam.name
+                const isActive = (cam.id == id)
+                navItems += navItem(href, text, isActive)
+            })
+            document.getElementById('navbar').innerHTML = navItems
+        }
+
+        function navItem(href = '', text = 'Link', isActive = false) {
+            return `<li class="nav-item"><a class="nav-link` + (isActive ? ' active' : '') + `" href="` + href + `">` + text + `</a></li>
+            `
+        }
+
+        getDeviceIp()
+        getDeviceCameraList()
+
+        function objectToQueryString(obj) {
+            const keyValuePairs = [];
+            for (const key in obj) {
+                if (obj.hasOwnProperty(key)) {
+                    keyValuePairs.push(encodeURIComponent(key) + '=' + encodeURIComponent(obj[key]));
+                }
+            }
+            return keyValuePairs.join('&');
+        }
+
+        var limit = 100
+        var offset = 0
+        var total = 0
+
+        var max_pagination = 10
+        var curr_min_page = 0
+        var curr_max_page = max_pagination
+
+        var chart = null
+        var chart_smp = null
+
+        var tampilan_per_jam = false
+
+        document.getElementById('btn_permenit').onclick = () => {
+            tampilan_per_jam = !tampilan_per_jam
+            document.getElementById('btn_permenit').disabled = true
+            document.getElementById('btn_perjam').disabled = false
+            getTabel()
+        }
+
+        document.getElementById('btn_perjam').onclick = () => {
+            tampilan_per_jam = !tampilan_per_jam
+            document.getElementById('btn_perjam').disabled = true
+            document.getElementById('btn_permenit').disabled = false
+            getTabel()
+        }
+
+
+        function getChart() {
+            if (chart != null) {
+                chart.destroy()
+            }
+
+            if (chart_smp != null) {
+                chart_smp.destroy()
+            }
+
+            const ctx = document.getElementById('chart').getContext('2d');
+            const ctx_smp = document.getElementById('chart_smp').getContext('2d');
+
+            chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: []
+                }
+            })
+
+            chart_smp = new Chart(ctx_smp, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: []
+                }
+            })
+
+            chart.data.labels = []
+            chart.data.datasets = []
+            chart_smp.data.labels = []
+            chart_smp.data.datasets = []
+
+            chart.update()
+            chart_smp.update()
+
+            const start_date = document.getElementById('start_date').value
+            const end_date = document.getElementById('end_date').value
+
+            // const url = 'http://'+be_ip+':3000/tabel_where/camera_log/camera_id/' + id + '?limit=' + limit + '&offset=' + offset
+
+            const url = 'http://'+be_ip+':3000/report'+((tampilan_per_jam) ? '_jam' : '')+'/' + id + '?start_date=' + start_date + '&end_date=' + end_date
+
+            axios.get(url)
+                .then(function (response) {
+                    let data = response.data.result
+                    // reverse data
+                    data = data.reverse()
+                    let labels = []
+                    let values = {
+                        sm_in: [],
+                        sm_out: [],
+                        mp_in: [],
+                        mp_out: [],
+                        ks_b_in: [],
+                        ks_b_out: [],
+                        ks_t_in: [],
+                        ks_t_out: [],
+                        bb_in: [],
+                        bb_out: [],
+                        tb_in: [],
+                        tb_out: [],
+                    }
+                    for (let i = 0; i < data.length; i++) {
+                        let waktu = data[i].waktu
+                        // convert waktu to dd-mm-yyyy hh:mm
+                        let date = new Date(waktu)
+                        let dd = date.getDate()
+                        let mm = date.getMonth() + 1
+                        let yyyy = date.getFullYear()
+                        let hh = (date.getHours() < 10) ? '0' + date.getHours() : date.getHours()
+                        let min = (date.getMinutes() < 10) ? '0' + date.getMinutes() : date.getMinutes()
+                        waktu = dd + '-' + mm + '-' + yyyy + ' ' + hh + ':' + min
+
+                        labels.push(waktu)
+
+                        values.sm_in.push(data[i].sm_in)
+                        values.sm_out.push(data[i].sm_out)
+                        values.mp_in.push(data[i].mp_in)
+                        values.mp_out.push(data[i].mp_out)
+                        values.ks_b_in.push(data[i].ks_b_in)
+                        values.ks_b_out.push(data[i].ks_b_out)
+                        values.ks_t_in.push(data[i].ks_t_in)
+                        values.ks_t_out.push(data[i].ks_t_out)
+                        values.bb_in.push(data[i].bb_in)
+                        values.bb_out.push(data[i].bb_out)
+                        values.tb_in.push(data[i].tb_in)
+                        values.tb_out.push(data[i].tb_out)
+                    }
+                    chart.data.labels = labels
+                    chart.data.datasets = [
+                        {
+                            label: 'sepeda motor (in)',
+                            data: values.sm_in
+                        },
+                        {
+                            label: 'sepeda motor (out)',
+                            data: values.sm_out
+                        },
+                        {
+                            label: 'mobil penumpang (in)',
+                            data: values.mp_in
+                        },
+                        {
+                            label: 'mobil penumpang (out)',
+                            data: values.mp_out
+                        },
+                        {
+                            label: 'bus (in)',
+                            data: values.ks_b_in
+                        },
+                        {
+                            label: 'bus (out)',
+                            data: values.ks_b_out
+                        },
+                        {
+                            label: 'truck (in)',
+                            data: values.ks_t_in
+                        },
+                        {
+                            label: 'truck (out)',
+                            data: values.ks_t_out
+                        },
+                        {
+                            label: 'bus besar (in)',
+                            data: values.bb_in
+                        },
+                        {
+                            label: 'bus besar (out)',
+                            data: values.bb_out
+                        },
+                        {
+                            label: 'truck besar (in)',
+                            data: values.tb_in
+                        },
+                        {
+                            label: 'truck besar (out)',
+                            data: values.tb_out
+                        }
+                    ]
+                    chart.update()
+
+                    let labels_smp = []
+                    let values_smp = {
+                        in: [],
+                        out: []
+                    }
+                    for (let i = 0; i < data.length; i++) {
+                        let waktu = data[i].waktu
+                        // convert waktu to dd-mm-yyyy hh:mm
+                        let date = new Date(waktu)
+                        let dd = date.getDate()
+                        let mm = date.getMonth() + 1
+                        let yyyy = date.getFullYear()
+                        let hh = (date.getHours() < 10) ? '0' + date.getHours() : date.getHours()
+                        let min = (date.getMinutes() < 10) ? '0' + date.getMinutes() : date.getMinutes()
+                        waktu = dd + '-' + mm + '-' + yyyy + ' ' + hh + ':' + min
+
+                        labels_smp.push(waktu)
+
+                        values_smp.in.push(data[i].smp_in)
+                        values_smp.out.push(data[i].smp_out)
+                    }
+                    chart_smp.data.labels = labels_smp
+                    chart_smp.data.datasets = [
+                        {
+                            label: 'smp (in)',
+                            data: values_smp.in
+                        },
+                        {
+                            label: 'smp (out)',
+                            data: values_smp.out
+                        }
+                    ]
+                    chart_smp.update()
+
+                })
+                .catch(function (error) {
+                    console.log(error)
+                })
+        }
+
+
+        function getTabel() {
+            document.getElementById('data').innerHTML = '<tr><td colspan="15">Loading...</td></tr>'
+
+            const start_date = document.getElementById('start_date').value
+            const end_date = document.getElementById('end_date').value
+
+            // const url = 'http://'+be_ip+':3000/tabel_where/camera_log/camera_id/' + id + '?limit=' + limit + '&offset=' + offset
+            // const url = 'http://'+be_ip+':3000/report/' + id + '?start_date=' + start_date + '&end_date=' + end_date
+            
+            const url = 'http://'+be_ip+':3000/report'+((tampilan_per_jam) ? '_jam' : '')+'/' + id + '?start_date=' + start_date + '&end_date=' + end_date
+
+            axios.get(url)
+                .then(function (response) {
+                    let data = response.data.result
+                    // reverse data
+                    // data = data.reverse()
+                    let tabel = ''
+                    for (let i = 0; i < data.length; i++) {
+                        // console.log(data[i])
+                        let sm_in = (data[i].sm_in) ? data[i].sm_in : data[i].sm
+                        let mp_in = (data[i].mp_in) ? data[i].mp_in : data[i].mp
+                        let ks_in = (data[i].ks_in) ? data[i].ks_in : data[i].ks
+                        let ks_b_in = (data[i].ks_b_in) ? data[i].ks_b_in : data[i].ks / 2
+                        let ks_t_in = (data[i].ks_t_in) ? data[i].ks_t_in : data[i].ks / 2
+                        let bb_in = (data[i].bb_in) ? data[i].bb_in : data[i].bb
+                        let tb_in = (data[i].tb_in) ? data[i].tb_in : data[i].tb
+                        let smp_in = (data[i].smp_in) ? data[i].smp_in : data[i].smp
+                        smp_in = hitung_smp_simpang_apill(sm_in, mp_in, ks_in, bb_in, tb_in, 'terlindung')
+                        smp_in = smp_in.toFixed(2)
+
+                        let sm_out = (data[i].sm_out) ? data[i].sm_out : 0
+                        let mp_out = (data[i].mp_out) ? data[i].mp_out : 0
+                        let ks_out = (data[i].ks_out) ? data[i].ks_out : 0
+                        let ks_b_out = (data[i].ks_b_out) ? data[i].ks_b_out : 0
+                        let ks_t_out = (data[i].ks_t_out) ? data[i].ks_t_out : 0
+                        let bb_out = (data[i].bb_out) ? data[i].bb_out : 0
+                        let tb_out = (data[i].tb_out) ? data[i].tb_out : 0
+                        let smp_out = (data[i].smp_out) ? data[i].smp_out : 0
+                        smp_out = hitung_smp_simpang_apill(sm_out, mp_out, ks_out, bb_out, tb_out, 'terlindung')
+                        smp_out = smp_out.toFixed(2)
+
+                        let waktu = data[i].waktu
+                        // convert waktu to dd-mm-yyyy hh:mm
+                        let date = new Date(waktu)
+                        let dd = date.getDate()
+                        let mm = date.getMonth() + 1
+                        let yyyy = date.getFullYear()
+                        let hh = (date.getHours() < 10) ? '0' + date.getHours() : date.getHours()
+                        let min = (date.getMinutes() < 10) ? '0' + date.getMinutes() : date.getMinutes()
+                        waktu = dd + '-' + mm + '-' + yyyy + ' ' + hh + ':' + min
+
+                        let row = '<tr><td>' + waktu + '</td><td>' + sm_in + '</td><td>' + sm_out + '</td><td>' + mp_in + '</td><td>' + mp_out + '</td><td>' + ks_b_in + '</td><td>' + ks_b_out + '</td><td>' + ks_t_in + '</td><td>' + ks_t_out + '</td><td>' + bb_in + '</td><td>' + bb_out + '</td><td>' + tb_in + '</td><td>' + tb_out + '</td><td>' + smp_in + '</td><td>' + smp_out + '</td></tr>'
+                        tabel += row
+                    }
+                    document.getElementById('data').innerHTML = tabel
+                    setupPagination()
+                    getChart()
+                })
+                .catch(function (error) {
+                    console.log(error)
+                    document.getElementById('data').innerHTML = '<tr><td colspan="7">Error <br> <a href="javascript:getTabel()">Refresh</a> </td></tr>'
+                })
+        }
+
+        // pagination functions
+        function prev() {
+            offset -= limit
+            if (offset < 0) {
+                offset = 0
+                curr_min_page = 0
+                curr_max_page = 10
+            }
+            if (offset < curr_min_page * limit) {
+                curr_min_page -= 1
+                curr_max_page -= 1
+            }
+            if (offset < 0) {
+                document.getElementById('prev').disabled = true
+            }
+            else {
+                document.getElementById('prev').disabled = false
+            }
+            getTabel()
+        }
+        function next() {
+            offset += limit
+            if (offset > total) {
+                offset = total
+            }
+            if (offset >= curr_max_page * limit && curr_max_page < total / limit) {
+                curr_max_page += 1
+                curr_min_page += 1
+            }
+            if (offset >= total) {
+                document.getElementById('next').disabled = true
+            }
+            else {
+                document.getElementById('next').disabled = false
+            }
+            getTabel()
+        }
+        function setupPagination() {
+            axios.get('http://'+be_ip+':3000/tabel_where_lenght/camera_log/camera_id/' + id)
+                .then(function (response) {
+                    console.log(response)
+                    total = response.data.result.count
+                    let paginationHTML = ''
+                    paginationHTML += '<button type="button" class="btn btn-primary" onclick="prev()" id="prev">⬅️</button>'
+                    for (let i = curr_min_page; i < curr_max_page; i++) {
+                        const btn_class = (offset == i * limit) ? 'btn-primary' : 'btn-light'
+                        paginationHTML += '<button type="button" class="btn ' + btn_class + '" onclick="offset=' + i * limit + ';getTabel()">' + (i + 1) + '</button>'
+                    }
+                    paginationHTML += '<button type="button" class="btn btn-primary" onclick="next()" id="next">➡️</button>'
+                    document.getElementById('pagination').innerHTML = paginationHTML
+                    document.getElementById('prev').disabled = true
+                    document.getElementById('next').disabled = true
+                    if (offset != 0) {
+                        document.getElementById('prev').disabled = false
+                    }
+                    if (offset + limit < total) {
+                        document.getElementById('next').disabled = false
+                    }
+                    document.getElementById('prev').addEventListener('click', prev)
+                    document.getElementById('next').addEventListener('click', next)
+                })
+        }
+
+        getTabel()
+        // getChart()
+        setInterval(() => {
+            getChart()
+            // getTabel()
+        }, 1000 * 60)
+
+    </script>
+</body>
+
+</html>
