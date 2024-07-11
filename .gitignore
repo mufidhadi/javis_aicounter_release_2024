@@ -4,3 +4,4 @@ db_orin_meja.sql
 # *.pt
 # *.onnx
 # *.engine
+/manual
