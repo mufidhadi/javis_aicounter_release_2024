@@ -1,0 +1,109 @@
+:root {
+    --main-color: #2C622C;
+    --link-color: #234923;
+    --text-color: #222;
+    --hover-color: #234923;
+    --decline-color: #f6f6f6;
+    --decline-text: #000;
+    --decline-hover: #dddddd;
+    --footer-background: #f6f6f6;
+}
+
+@font-face {
+    font-family: 'paytone';
+    src: local('PaytoneOne-Regular'), url('./fonts/PaytoneOne-Regular.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'bebasnue';
+    src: local('BebasNeue-Regular'), url('./fonts/BebasNeue-Regular.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'anton';
+    src: local('Anton-Regular'), url('./fonts/Anton-Regular.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'open-sans';
+    src: local('OpenSans-VariableFont'), url('./fonts/OpenSans-VariableFont.ttf') format('truetype');
+}
+
+body {
+    background-color: #f4f0e6;
+    color: #2C622C;
+}
+
+.payone {
+    font-family: 'paytone';
+}
+
+.bebasnue {
+    font-family: 'bebasnue';
+}
+
+.anton {
+    font-family: 'anton';
+}
+
+.opensans {
+    font-family: 'open-sans';
+}
+
+.bg-primary {
+    background-color: var(--main-color) !important;
+}
+
+.text-primary {
+    color: var(--main-color) !important;
+}
+
+.card.bg-primary {
+    border-color: var(--main-color) !important;
+}
+
+.blinking {
+    animation: blinking 1.5s infinite ease-in-out;
+}
+
+@keyframes blinking {
+    0% {
+        opacity: 0.25;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0.25;
+    }
+}
+
+.bg-dark {
+    color: #f4f0e6 !important;
+}
+
+.breadcrumb-item.active {
+    font-weight: bold;
+}
+
+.breadcrumb-item+.breadcrumb-item::before {
+    content: "→";
+}
+
+.btn-add .text {
+    display: none;
+    width: 0;
+    /* transition: all 1s ease-in-out; */
+}
+
+.btn-add:hover .text {
+    display: inline;
+    width: auto;
+    margin-left: .5em;
+}
+
+.canvas{
+    width: 100%;
+}
