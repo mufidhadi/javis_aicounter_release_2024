@@ -1,0 +1,27 @@
+stages:
+  - build
+  - deploy
+
+variables:
+  NODE_ENV: production
+
+cache:
+  paths:
+    - node_modules/
+
+before_script:
+  - echo "before"
+#   - cd /aicounter/web_fe_dev
+#   - npm install
+
+build:
+  stage: build
+  script:
+    - echo "build"
+
+deploy:
+  stage: deploy
+  script:
+    - echo "deploy"
+  only:
+    - main
